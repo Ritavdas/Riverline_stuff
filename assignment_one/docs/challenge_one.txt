@@ -1,0 +1,38 @@
+# Riverline Hiring Assignment - Full Stack AI Engineer
+
+## General Guidelines
+
+- Keep your code short and concise.
+- Feel free to use any tools that help you solve this assignment.
+- The assignment has two parts. Both are compulsory.
+- The assignment is designed to be hard and lengthy. Starting early will help.
+- There are no right answers. Approach matters more than correctness.
+- The submission form is at the end of this document.
+    - This will ask for additional details, apart from your assignment.
+    - Go through the form well in advance to avoid any last minute confusion.
+- Reach out to us if you have any queries (jayanth@riverline.ai)
+- The deadline (mentioned on the email) will be strict - no extensions! So, plan accordingly.
+
+### Challenge 1: Building voice agents with LiveKit
+
+We use [LiveKit](https://livekit.io/) at Riverline to build AI voice agents. LiveKit is an open-source tool that helps connect large language models (LLMs), text-to-speech (TTS), and speech-to-text (STT) services. It also works with cloud telephony systems so that the AI can make and receive phone calls.
+
+Your task is to build a **debt collection voice agent** using LiveKit. It should be able to call people (outbound calls) and talk to them like a real human.
+
+You can design your own debt collection scenario (e.g., a bank reminding about overdue credit card bills, a telecom company following up on unpaid dues, etc.). Here are the requirements:
+
+1. **Robust Voice Agent**
+    - Your bot should handle edge cases (unexpected user responses, background noise, interruptions, etc.).
+2. **Human-like Conversation**
+    - Make the conversation feel natural and polite.
+    - The voice should sound real and convincing. So, choose your models wisely.
+3. **Phone Call Integration**
+    - Use Twilio to dial outbound phone calls to any number. Their free credits should be able to cover and set up instructions will be available on their docs as well as LiveKit docs.
+    - Tip: Use a **US number**. Indian numbers require business verification.
+4. **Easy to Use**
+    - Make the app simple and smooth to use.
+5. **Bonus (Brownie Points)**
+    - Record the call using egress functionality and save the transcript of the conversation using LiveKit.
+    - Use any opensource framework to analyze the transcript to predict the customer’s risk. (This part is meant to be open-ended. Novelty is welcomed :) )
+
+Submit a code implementation of the application, along with a 2-3 minute Loom recording of you walking through the project.

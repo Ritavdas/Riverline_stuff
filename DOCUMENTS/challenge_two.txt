@@ -1,0 +1,25 @@
+## General Guidelines
+
+- Keep your code short and concise.
+- Feel free to use any tools that help you solve this assignment.
+- The assignment has two parts. Both are compulsory.
+- The assignment is designed to be hard and lengthy. Starting early will help.
+- There are no right answers. Approach matters more than correctness.
+- The submission form is at the end of this document.
+    - This will ask for additional details, apart from your assignment.
+    - Go through the form well in advance to avoid any last minute confusion.
+- Reach out to us if you have any queries (jayanth@riverline.ai)
+- The deadline (mentioned on the email) will be strict - no extensions! So, plan accordingly.
+
+### Challenge 2: Self-correcting Voice Agents
+
+If you’ve ever built a voice agent, we would agree upon the fact that testing voice agents is harder than building one. Replicating a real-world conversations with voice agents is hard. We’re using [Cekura](https://cekura.ai) for testing our voice agents across different customer personas to identify places where our bot has to improve. Here’s a demo on how AI-automated testing of voice agents on Cekura works:  https://youtu.be/QIi6yawrWDA. A step ahead from here is, what if voice agents are able to self-correct themselves. Here’s a demo of self-correcting voice agents by [Vogent](https://vogent.ai): https://www.youtube.com/watch?v=7yKWYjlQN8U
+
+Here’s the challenge: 
+
+1. Build an AI-automated testing platform for voice agents. Automatically generate loan defaulter personalities, test them against deployed bot’s prompt. You can do this in chat by simulating conversation between two LLMs or even better, in voice (You can even attempt to integrate the voice agent you built in the first part ). Validate your testing by picking any two metrics that you would want to track for a voice agent (like, is the bot repeating itself, is the bot negotiating enough, is the bot providing irrelevant response to the customer etc.) 
+2. Self-correcting voice agent: Once there is a mechanism to understand the failure points of the voice agent, the agent should be able to self-correct itself by rewriting its script, and then undergo the automated testing until a threshold score or number of iterations is reached. Build a flow for the same.
+
+The goal is to go from a base script for the debt collection bot, to a state where the bot handles almost every scenario possible on a real-world call, by constantly testing and iterating itself in an automated fashion. 
+
+Submit a code implementation of the automated testing + self correcting voice agent, along with a 2-3 minute Loom recording of you walking through the project.
