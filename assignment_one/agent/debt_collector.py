@@ -1,6 +1,8 @@
+import json
 import logging
 
 from dotenv import load_dotenv
+from livekit import api
 from livekit.agents import (
     Agent,
     AgentSession,
@@ -16,7 +18,7 @@ logger = logging.getLogger("debt-collection-agent")
 
 
 class DebtCollectionAgent(Agent):
-    def __init__(self) -> None:
+    def __init__(self, is_outbound=True) -> None:
         super().__init__(
             instructions=(
                 "You are Sarah, a professional and polite debt collection representative from SecureBank. "
@@ -38,9 +40,10 @@ class DebtCollectionAgent(Agent):
                 "Be understanding but firm about the need for payment resolution."
             ),
         )
+        self.is_outbound = is_outbound
 
     async def on_enter(self):
-        # When the agent enters the session, start with the greeting
+        # Greet immediately for both inbound and outbound calls
         await self.session.say(
             "Hello, may I please speak with the account holder for credit card ending in 4729?",
             allow_interruptions=True,
@@ -56,8 +59,45 @@ def prewarm(proc: JobProcess):
 async def entrypoint(ctx: JobContext):
     """Main entrypoint for the debt collection voice agent"""
 
-    # Wait for the first participant to connect
-    await ctx.wait_for_participant()
+    # Check if this is an outbound call by looking for phone number in metadata
+    is_outbound = False
+    phone_number = None
+
+    try:
+        if ctx.job.metadata:
+            dial_info = json.loads(ctx.job.metadata)
+            phone_number = dial_info.get("phone_number")
+            if phone_number:
+                is_outbound = True
+                logger.info(f"Outbound call detected for {phone_number}")
+    except (json.JSONDecodeError, KeyError):
+        logger.info("No phone number in metadata, treating as inbound call")
+
+    # If this is an outbound call, create the SIP participant first
+    if is_outbound and phone_number:
+        try:
+            import os
+
+            trunk_id = os.getenv("LIVEKIT_SIP_TRUNK_ID")
+
+            await ctx.api.sip.create_sip_participant(
+                api.CreateSIPParticipantRequest(
+                    room_name=ctx.room.name,
+                    sip_trunk_id=trunk_id,
+                    sip_call_to=phone_number,
+                    participant_identity=f"caller-{phone_number}",
+                    participant_name="Outbound Call",
+                    wait_until_answered=True,
+                )
+            )
+            logger.info("Outbound call connected successfully")
+        except api.TwirpError as e:
+            logger.error(f"Error creating SIP participant: {e.message}")
+            ctx.shutdown()
+            return
+    else:
+        # For inbound calls, wait for participant to connect
+        await ctx.wait_for_participant()
 
     logger.info("Participant connected, starting debt collection agent")
 
@@ -79,7 +119,7 @@ async def entrypoint(ctx: JobContext):
 
     # Start the agent session
     await session.start(
-        agent=DebtCollectionAgent(),
+        agent=DebtCollectionAgent(is_outbound=is_outbound),
         room=ctx.room,
     )
 
@@ -89,5 +129,6 @@ if __name__ == "__main__":
         WorkerOptions(
             entrypoint_fnc=entrypoint,
             prewarm_fnc=prewarm,
+            agent_name="debt-collection-agent",  # Enable explicit dispatch
         ),
     )
