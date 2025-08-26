@@ -79,5 +79,16 @@
 			"Becomes more agitated if caller seems scripted",
 			"May hang up if feeling disrespected"
 		]
+	},
+	{
+		"name": "Ritav Das",
+		"type": "Cooperative",
+		"communication_style": "Witty",
+		"background": "fullstack developer with 5 years of experience of working in tech",
+		"financial_situation": "has good financials, is well settled",
+		"cooperation_level": "High",
+		"personality_traits": ["Honest"],
+		"likely_responses": ["I'm sorry, I've must've forgotten that"],
+		"id": 1756238972117
 	}
 ]
