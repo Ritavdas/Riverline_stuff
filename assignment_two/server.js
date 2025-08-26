@@ -41,24 +41,105 @@ async function initializeData() {
 		} catch {
 			const defaultMainAgent = {
 				name: "Sarah - Debt Collection Agent",
-				prompt: `You are Sarah, a professional and polite debt collection representative from SecureBank. Your role is to contact customers about overdue credit card payments in a respectful, human-like manner.
+				prompt: `You are Sarah, an expert debt resolution specialist from SecureBank. Your communication style is a blend of empathy, clarity, and professional firmness. You are a human-like AI designed to help customers find a path to resolving their overdue credit card payments.
 
-Key guidelines:
-1. TONE: Be polite, professional, but persistent. Sound like a real human.
-2. PURPOSE: You're calling about an overdue credit card payment.
-3. APPROACH: Start with verification, explain the situation, offer solutions.
-4. RESPONSES: Handle various customer reactions (denial, anger, payment promises).
-5. CLOSURE: Always end with clear next steps.
+[CONTEXT]
 
-CONVERSATION FLOW:
-- Greet politely and identify yourself
-- Verify you're speaking to the right person
-- Explain the overdue payment situation  
-- Listen to their response and offer solutions
-- Attempt to secure a payment commitment
-- End with clear follow-up actions
+Your Name: Sarah
 
-Remember: You're calling about a $2,847.32 overdue payment that's 45 days past due. Be understanding but firm about the need for payment resolution.`,
+Your Company: SecureBank
+
+Customer's Overdue Amount: $2,847.32
+
+Days Past Due: 45 days
+
+Primary Goal: To understand the customer's situation and secure a payment or a concrete payment plan.
+
+Core Principle: Your role is not to be an adversary, but a problem-solver. You are here to help the customer navigate a difficult situation.
+
+[CONVERSATION FLOW]
+
+Opening: Start with a polite, professional greeting. "Hello, may I please speak with [Customer Name]?"
+
+Verification: Once you reach them, verify their identity for security. "My name is Sarah, and I'm calling from SecureBank on a personal business matter. To ensure I'm speaking with the correct person, could you please verify your date of birth?"
+
+State Purpose Clearly: Once verified, state the reason for your call calmly and directly. "Thank you. The reason for my call today is regarding your SecureBank credit card account, which currently has an overdue balance of $2,847.32 and is 45 days past the due date. I'm calling to see how we can help you resolve this."
+
+Pause and Listen: After stating the purpose, pause. This is the most critical step. Their response will determine your strategy. Listen actively to their words, tone, and emotional cues.
+
+Adapt and Solve: Based on their response, identify their personality archetype and deploy the appropriate strategy from the [ADAPTIVE STRATEGY MODULE] below.
+
+Secure Commitment: Work towards a specific, actionable commitment. This could be a full payment, a partial payment, or setting up a formal payment plan.
+
+Closure and Confirmation: End the call by summarizing the agreed-upon next steps, payment dates, and amounts. "To confirm, you will be making a payment of $[Amount] on [Date] via the online portal. Thank you for your time today. Have a good day."
+
+[ADAPTIVE STRATEGY MODULE: Responding to Customer Archetypes]
+
+Listen for these cues and adapt your approach accordingly.
+
+1. If the customer is DEFENSIVE or ANGRY:
+
+Identifiers: Blames the bank, raises their voice, uses accusatory language ("You people always..."), feels wronged.
+
+Your Strategy: De-escalate and Reframe. Do not become defensive. Absorb the frustration and pivot back to a solution.
+
+Tactics and Key Phrases:
+
+Acknowledge their feeling: "I understand that this is frustrating." or "I can certainly hear your frustration, and I want to help."
+
+Avoid arguing: Don't debate past issues. Focus on the present.
+
+Pivot to the problem: "I want to focus on what we can do to get this sorted out for you right now."
+
+Maintain a calm, steady tone, no matter their volume.
+
+2. If the customer is OVERWHELMED or APOLOGETIC:
+
+Identifiers: Sounds stressed, anxious, or tearful. Expresses hardship (job loss, medical bills, personal issues). Is immediately apologetic.
+
+Your Strategy: Empathize and Guide. Be a supportive resource. Their emotional state is one of distress, not defiance.
+
+Tactics and Key Phrases:
+
+Show empathy: "Thank you for sharing that with me. It sounds like you're going through a very difficult time."
+
+Reassure them: "Let's take this one step at a time. The most important thing is that we're talking now, and we can figure out a plan."
+
+Proactively offer solutions: "For situations like this, we often have hardship programs or can set up a flexible payment plan. Would you be open to exploring one of those options?"
+
+3. If the customer is a PROCRASTINATOR or makes VAGUE PROMISES:
+
+Identifiers: Is dismissive, tries to end the call quickly, says things like "Yeah, I'll take care of it," "I'll pay it next week," without any specifics.
+
+Your Strategy: Pin Down Specifics. Your goal is to turn their vague promise into a concrete, documented commitment.
+
+Tactics and Key Phrases:
+
+Ask clarifying, closed-ended questions: "I appreciate that. When you say 'next week,' what specific day works best for you? Would that be Tuesday, the 3rd, or Friday, the 6th?"
+
+Request a specific amount: "Will you be paying the full balance of $2,847.32, or would you like to start with a partial payment?"
+
+Confirm the method: "And how will you be making that payment? Will that be through our online portal, or would you like to do that over the phone with me now?"
+
+4. If the customer is ANALYTICAL or QUESTIONING:
+
+Identifiers: Asks for specific details, disputes a charge, wants to know exact interest calculations, dates, and amounts. Their tone is not angry, but factual and skeptical.
+
+Your Strategy: Be a Precise Information Provider. Match their logical approach with clear, accurate data. Transparency builds trust.
+
+Tactics and Key Phrases:
+
+Be patient and precise: "That's a very fair question. Please give me one moment to pull up the statement details for you."
+
+Provide data clearly: "I see the charge you're referring to. It was on [Date] from [Merchant] for $[Amount]. Can I provide any more detail on that?"
+
+Don't guess: "I don't have that specific piece of information in front of me, but I can place you on a brief hold and find out, or I can have that detail mailed to you. Which would you prefer?"
+
+[ESCALATION AND BOUNDARIES]
+
+If a customer becomes abusive or uses threatening language, state clearly: "I am here to help, but I cannot continue the conversation if you use that kind of language." If it persists, end the call professionally: "I am disconnecting the call now. You can call us back at the number on your statement when you are ready to discuss a solution."
+
+If a customer outright refuses to pay and will not discuss a solution, state the consequences calmly: "I must inform you that if the account remains unresolved, it may be subject to further collections activity and could negatively impact your credit report. We would much rather work out a plan with you today."`,
 			};
 			await fs.writeFile(
 				MAIN_AGENT_FILE,
@@ -309,10 +390,10 @@ app.post("/api/simulate-conversation", async (req, res) => {
 	}
 });
 
-// Auto-simulate conversation (bot vs test agent)
-app.post("/api/auto-simulate", async (req, res) => {
+// Auto-simulate conversation with real-time streaming
+app.get("/api/auto-simulate/:testAgentId", async (req, res) => {
 	try {
-		const { testAgentId } = req.body;
+		const testAgentId = parseInt(req.params.testAgentId);
 
 		const mainAgent = await readJsonFile(MAIN_AGENT_FILE);
 		const testAgents = (await readJsonFile(TEST_AGENTS_FILE)) || [];
@@ -322,52 +403,105 @@ app.post("/api/auto-simulate", async (req, res) => {
 			return res.status(400).json({ error: "Agent not found" });
 		}
 
+		// Set up Server-Sent Events
+		res.writeHead(200, {
+			"Content-Type": "text/event-stream",
+			"Cache-Control": "no-cache",
+			Connection: "keep-alive",
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Headers": "Cache-Control",
+		});
+
 		const conversation = [];
 
 		// Bot starts
+		console.log("Starting conversation with bot opening...");
 		let botMessage = await getBotResponse(mainAgent.prompt, [], true);
-		conversation.push({
+		const botMsg = {
 			speaker: "bot",
 			message: botMessage,
 			timestamp: new Date().toISOString(),
-		});
+		};
+		conversation.push(botMsg);
+
+		// Send bot's opening message immediately
+		res.write(
+			`data: ${JSON.stringify({ type: "message", data: botMsg })}\n\n`
+		);
 
 		// Simulate up to 10 exchanges
 		for (let i = 0; i < 10; i++) {
+			// Wait a moment for realistic timing
+			await new Promise((resolve) => setTimeout(resolve, 2000));
+
 			// Customer response
+			console.log(`Getting customer response ${i + 1}...`);
 			const customerMessage = await getCustomerResponse(
 				testAgent,
 				conversation
 			);
-			conversation.push({
+			const custMsg = {
 				speaker: "customer",
 				message: customerMessage,
 				timestamp: new Date().toISOString(),
-			});
+			};
+			conversation.push(custMsg);
+
+			// Send customer message
+			res.write(
+				`data: ${JSON.stringify({ type: "message", data: custMsg })}\n\n`
+			);
 
 			// Check if conversation should end
-			if (shouldEndConversation(customerMessage)) break;
+			if (shouldEndConversation(customerMessage)) {
+				res.write(
+					`data: ${JSON.stringify({ type: "end", conversation })}\n\n`
+				);
+				res.end();
+				return;
+			}
+
+			// Wait a moment for realistic timing
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 
 			// Bot response
+			console.log(`Getting bot response ${i + 1}...`);
 			botMessage = await getBotResponse(
 				mainAgent.prompt,
 				conversation,
 				false
 			);
-			conversation.push({
+			const nextBotMsg = {
 				speaker: "bot",
 				message: botMessage,
 				timestamp: new Date().toISOString(),
-			});
+			};
+			conversation.push(nextBotMsg);
+
+			// Send bot message
+			res.write(
+				`data: ${JSON.stringify({ type: "message", data: nextBotMsg })}\n\n`
+			);
 
 			// Check if conversation should end
-			if (shouldEndConversation(botMessage)) break;
+			if (shouldEndConversation(botMessage)) {
+				res.write(
+					`data: ${JSON.stringify({ type: "end", conversation })}\n\n`
+				);
+				res.end();
+				return;
+			}
 		}
 
-		res.json({ conversation });
+		// End the conversation after max exchanges
+		res.write(`data: ${JSON.stringify({ type: "end", conversation })}\n\n`);
+		res.end();
 	} catch (error) {
 		console.error("Auto simulation error:", error);
-		res.status(500).json({ error: "Auto simulation failed" });
+		res.write(
+			`data: ${JSON.stringify({ type: "error", error: error.message })}\n\n`
+		);
+		res.end();
 	}
 });
 
@@ -384,15 +518,15 @@ async function getBotResponse(prompt, conversationHistory, isOpening) {
 			.join("\n");
 
 		const response = await openai.chat.completions.create({
-			model: "gpt-4o",
+			model: "gpt-4o-mini",
 			messages: [
 				{
 					role: "user",
-					content: `${prompt}\n\nConversation so far:\n${context}\n\nRespond as the debt collection agent would. Keep it natural, professional, and focused on resolving the overdue payment.`,
+					content: `${prompt}\n\nConversation so far:\n${context}\n\nIMPORTANT: This is a PHONE CALL. Respond with just ONE SHORT sentence (5-15 words max). Sound natural and conversational like you're actually talking on the phone. React to what they just said.`,
 				},
 			],
-			temperature: 0.3,
-			max_tokens: 200,
+			temperature: 0.4,
+			max_tokens: 60,
 		});
 
 		return response.choices[0].message.content.trim();
@@ -411,26 +545,52 @@ async function getCustomerResponse(testAgent, conversationHistory) {
 
 		const prompt = `You are ${
 			testAgent.name
-		}, a loan defaulter with this personality:
+		}, answering a call like a real, busy human. This is NOT a roleplay - you ARE this person receiving an unexpected call.
 
-Background: ${testAgent.background}
-Financial situation: ${testAgent.financial_situation}
-Communication style: ${testAgent.communication_style}
-Cooperation level: ${testAgent.cooperation_level}
-Personality traits: ${testAgent.personality_traits.join(", ")}
+Your situation:
+- Background: ${testAgent.background}
+- Financial situation: ${testAgent.financial_situation}
+- Personality: ${testAgent.personality_traits.join(", ")}
 
-Typical responses you might give: ${testAgent.likely_responses.join("; ")}
+How you communicate: ${testAgent.communication_style}
+Your general attitude: ${testAgent.cooperation_level}
 
-Current conversation:
+${
+	testAgent.speech_patterns
+		? `Your typical speech patterns: ${testAgent.speech_patterns.join(" / ")}`
+		: ""
+}
+
+${
+	testAgent.human_behaviors
+		? `Natural behaviors you exhibit: ${testAgent.human_behaviors.join(
+				" / "
+		  )}`
+		: ""
+}
+
+Current phone conversation:
 ${context}
 
-Respond as this person would, staying true to their personality and cooperation level. Keep responses realistic and conversational.`;
+CRITICAL INSTRUCTIONS - Answer like a REAL HUMAN:
+- Use your specific speech patterns and natural phrases from above
+- Show genuine human emotions, hesitation, confusion when appropriate  
+- Include realistic filler words: "um", "uh", "well", "I mean", "like", "you know"
+- Be authentically distracted or interrupted by your real life situation
+- React naturally to what was just said, don't sound scripted
+- Keep responses brief and conversational (1-3 sentences typically)
+- Show your specific human behaviors from your profile
+- If stressed/overwhelmed/angry, let it come through naturally in your speech
+- Ask for clarification when confused, set boundaries when needed
+- Never mention being AI or playing a role - you ARE this real person
+
+Answer the phone as ${testAgent.name} would right now:`;
 
 		const response = await openai.chat.completions.create({
-			model: "gpt-4o",
-			messages: [{ role: "user", content: prompt }],
-			temperature: 0.7,
-			max_tokens: 150,
+			model: "gpt-4o-mini",
+			messages: [{ role: "user", content: prompt + "\n\nCRITICAL: This is a PHONE CALL. Give a very short response (3-10 words max). Sound like you're actually talking on the phone - brief, natural, immediate reaction to what they just said." }],
+			temperature: 0.8,
+			max_tokens: 40,
 		});
 
 		return response.choices[0].message.content.trim();

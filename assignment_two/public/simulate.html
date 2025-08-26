@@ -140,6 +140,11 @@
                             Start Conversation
                         </button>
                         
+                        <button id="testMessageBtn" class="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-bug mr-2"></i>
+                            Test Message Display
+                        </button>
+                        
                         <button id="clearChatBtn" class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                             <i class="fas fa-broom mr-2"></i>
                             Clear Chat
@@ -319,40 +324,70 @@
             }
         }
 
-        // Run auto simulation
+        // Run auto simulation with real-time streaming
         async function runAutoSimulation() {
             try {
-                showStatus('Running automated conversation simulation...', 'success');
+                showStatus('Starting real-time conversation simulation...', 'success');
                 
-                const response = await fetch('/api/auto-simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ testAgentId: selectedAgent.id })
-                });
+                console.log('Starting real-time simulation with agent:', selectedAgent.id);
                 
-                const result = await response.json();
+                // Clear existing messages first
+                document.getElementById('chatMessages').innerHTML = '';
+                conversationHistory = [];
                 
-                if (result.conversation) {
-                    conversationHistory = result.conversation;
+                // Create EventSource for Server-Sent Events
+                const eventSource = new EventSource(`/api/auto-simulate/${selectedAgent.id}`);
+                
+                // Handle incoming messages
+                eventSource.onmessage = function(event) {
+                    console.log('Received SSE event:', event.data);
                     
-                    // Display messages with animation
-                    for (let i = 0; i < result.conversation.length; i++) {
-                        setTimeout(() => {
-                            addMessageToChat(result.conversation[i]);
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'message') {
+                            console.log('Adding real-time message:', data.data);
+                            conversationHistory.push(data.data);
+                            addMessageToChat(data.data);
                             updateStats();
-                        }, i * 1000); // 1 second delay between messages
+                            
+                        } else if (data.type === 'end') {
+                            console.log('Conversation ended, final conversation:', data.conversation);
+                            conversationHistory = data.conversation || conversationHistory;
+                            eventSource.close();
+                            showStatus('Conversation completed!', 'success');
+                            document.getElementById('startConversationBtn').disabled = false;
+                            
+                        } else if (data.type === 'error') {
+                            console.error('Received error:', data.error);
+                            eventSource.close();
+                            showStatus('Error: ' + data.error, 'error');
+                            document.getElementById('startConversationBtn').disabled = false;
+                        }
+                    } catch (parseError) {
+                        console.error('Error parsing SSE data:', parseError, event.data);
                     }
-                    
-                    setTimeout(() => {
-                        showStatus('Automated conversation completed!', 'success');
-                        document.getElementById('startConversationBtn').disabled = false;
-                    }, result.conversation.length * 1000);
-                } else {
-                    showStatus('Error running simulation', 'error');
+                };
+                
+                eventSource.onerror = function(event) {
+                    console.error('EventSource error:', event);
+                    eventSource.close();
+                    showStatus('Connection error during simulation', 'error');
                     document.getElementById('startConversationBtn').disabled = false;
-                }
+                };
+                
+                // Add timeout to prevent hanging
+                setTimeout(() => {
+                    if (eventSource.readyState === EventSource.OPEN) {
+                        eventSource.close();
+                        showStatus('Simulation timed out', 'error');
+                        document.getElementById('startConversationBtn').disabled = false;
+                    }
+                }, 60000); // 1 minute timeout
+                
             } catch (error) {
-                showStatus('Error running simulation', 'error');
+                console.error('Auto-simulation error:', error);
+                showStatus('Error starting simulation: ' + error.message, 'error');
                 document.getElementById('startConversationBtn').disabled = false;
             }
         }
@@ -431,7 +466,14 @@
 
         // Add message to chat
         function addMessageToChat(messageObj) {
+            console.log('addMessageToChat called with:', messageObj);
+            
             const chatMessages = document.getElementById('chatMessages');
+            if (!chatMessages) {
+                console.error('chatMessages element not found');
+                return;
+            }
+            
             const messageDiv = document.createElement('div');
             
             const isBot = messageObj.speaker === 'bot';
@@ -451,8 +493,11 @@
                 </div>
             `;
             
+            console.log('Appending message div to chat');
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            console.log('Current chat messages count:', chatMessages.children.length);
         }
 
         // Update conversation stats
@@ -551,11 +596,36 @@
             }, 5000);
         }
 
+        // Test message display function
+        function testMessageDisplay() {
+            console.log('Testing message display...');
+            
+            const testMessages = [
+                { speaker: 'bot', message: 'Hello, may I please speak with the account holder for credit card ending in 4729?', timestamp: new Date().toISOString() },
+                { speaker: 'customer', message: 'Yes, this is Maria. Is this about my credit card?', timestamp: new Date().toISOString() },
+                { speaker: 'bot', message: 'Yes Maria, I\'m Sarah from SecureBank. I\'m calling about your overdue balance of $2,847.32...', timestamp: new Date().toISOString() }
+            ];
+            
+            // Clear existing messages
+            document.getElementById('chatMessages').innerHTML = '';
+            
+            // Add test messages with delay
+            testMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    console.log('Adding test message:', msg);
+                    addMessageToChat(msg);
+                }, index * 1000);
+            });
+            
+            showStatus('Test messages added to chat', 'success');
+        }
+
         // Event listeners
         document.getElementById('testAgentSelect').addEventListener('change', handleAgentSelection);
         document.getElementById('autoSimulateBtn').addEventListener('click', () => startConversation(true));
         document.getElementById('manualSimulateBtn').addEventListener('click', () => startConversation(false));
         document.getElementById('startConversationBtn').addEventListener('click', () => startConversation(true));
+        document.getElementById('testMessageBtn').addEventListener('click', testMessageDisplay);
         document.getElementById('clearChatBtn').addEventListener('click', clearChat);
         document.getElementById('saveConversationBtn').addEventListener('click', saveConversation);
         document.getElementById('sendMessageBtn').addEventListener('click', sendManualMessage);
