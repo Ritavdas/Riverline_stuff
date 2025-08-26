@@ -114,6 +114,7 @@ async def entrypoint(ctx: JobContext):
         tts=openai.TTS(
             model="tts-1",
             voice="nova",  # Professional female voice
+            response_format="wav",
         ),
     )
 
