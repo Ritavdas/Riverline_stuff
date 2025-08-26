@@ -1,5 +1,7 @@
 import json
 import logging
+import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from livekit import api
@@ -101,19 +103,50 @@ async def entrypoint(ctx: JobContext):
 
     logger.info("Participant connected, starting debt collection agent")
 
+    # Start call recording - COMMENTED OUT FOR NOW
+    recording_id = None
+    if phone_number:  # Only record actual phone calls
+        try:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"debt_call_{phone_number}_{timestamp}"
+
+            # Create directory if it doesn't exist
+            os.makedirs("../recordings", exist_ok=True)
+
+            # Create room composite recording request (proper format)
+            recording_request = api.RoomCompositeEgressRequest(
+                room_name=ctx.room.name,
+                layout="speaker",  # Simple layout for debt collection
+                audio_only=True,  # Audio only recording
+                file_outputs=[
+                    api.EncodedFileOutput(
+                        filepath=f"recordings/{filename}.mp4"  # Relative path from LiveKit
+                    )
+                ],
+            )
+
+            recording = await ctx.api.egress.start_room_composite_egress(
+                recording_request
+            )
+            recording_id = recording.egress_id
+            logger.info(f"Started recording: {recording_id}")
+
+        except Exception as e:
+            logger.error(f"Failed to start recording: {e}")
+
     # Create agent session with OpenAI components
     session = AgentSession(
         vad=ctx.proc.userdata["vad"],
         stt=openai.STT(
-            model="whisper-1",
+            model="whisper-1",  # Best overall for natural conversation
         ),
         llm=openai.LLM(
-            model="gpt-4o-mini",
-            temperature=0.7,
+            model="gpt-4o",  # Superior conversational abilities and human-like responses
+            temperature=0.6,  # Slightly lower for more consistent professional tone
         ),
         tts=openai.TTS(
-            model="tts-1",
-            voice="nova",  # Professional female voice
+            model="tts-1-hd",  # Higher quality model for more natural voice
+            voice="alloy",  # More natural and professional sounding than nova
             response_format="wav",
         ),
     )
@@ -123,6 +156,16 @@ async def entrypoint(ctx: JobContext):
         agent=DebtCollectionAgent(is_outbound=is_outbound),
         room=ctx.room,
     )
+
+    # Stop recording when session ends
+    if recording_id:
+        try:
+            await ctx.api.egress.stop_egress(
+                api.StopEgressRequest(egress_id=recording_id)
+            )
+            logger.info(f"Stopped recording: {recording_id}")
+        except Exception as e:
+            logger.error(f"Failed to stop recording: {e}")
 
 
 if __name__ == "__main__":
