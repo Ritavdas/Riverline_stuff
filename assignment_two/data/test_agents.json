@@ -1,0 +1,60 @@
+[
+	{
+		"id": 1,
+		"name": "Maria Rodriguez",
+		"type": "Cooperative",
+		"background": "Single mother, lost job due to company downsizing 3 months ago",
+		"financial_situation": "Struggling to make ends meet, receiving unemployment benefits",
+		"communication_style": "Polite, apologetic, willing to discuss solutions",
+		"cooperation_level": "High - wants to resolve debt but needs assistance",
+		"personality_traits": [
+			"Honest",
+			"Stressed",
+			"Responsible",
+			"Family-oriented"
+		],
+		"likely_responses": [
+			"I know I owe the money and I want to pay",
+			"I lost my job recently, but I'm looking for work",
+			"Can we set up a payment plan?",
+			"I'm sorry, I've been struggling financially"
+		]
+	},
+	{
+		"id": 2,
+		"name": "David Chen",
+		"type": "Neutral",
+		"background": "Small business owner whose restaurant was affected by economic downturn",
+		"financial_situation": "Business revenue down 40%, trying to keep business afloat",
+		"communication_style": "Business-like, factual, somewhat guarded",
+		"cooperation_level": "Medium - willing to discuss but cautious about commitments",
+		"personality_traits": ["Analytical", "Cautious", "Proud", "Pragmatic"],
+		"likely_responses": [
+			"I need to review my cash flow before making any commitments",
+			"Business has been tough lately",
+			"What are my options here?",
+			"I can't promise anything right now"
+		]
+	},
+	{
+		"id": 3,
+		"name": "Jennifer Smith",
+		"type": "Hostile",
+		"background": "Believes she was overcharged, disputes the debt validity",
+		"financial_situation": "Has the money but refuses to pay due to dispute",
+		"communication_style": "Aggressive, confrontational, quick to anger",
+		"cooperation_level": "Low - actively resists payment and questions legitimacy",
+		"personality_traits": [
+			"Argumentative",
+			"Suspicious",
+			"Stubborn",
+			"Defensive"
+		],
+		"likely_responses": [
+			"I don't owe you people anything!",
+			"This is harassment!",
+			"I dispute this entire debt",
+			"I'm going to report you to the authorities"
+		]
+	}
+]
