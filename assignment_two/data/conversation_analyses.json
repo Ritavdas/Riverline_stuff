@@ -1,163 +1,312 @@
 [
-	{
-		"conversationId": "analysis_1756241320938",
-		"timestamp": "2025-08-26T20:48:40.938Z",
-		"testAgent": {
-			"id": 3,
-			"name": "Jennifer Smith",
-			"type": "Hostile",
-			"background": "Works as a nurse, believes bank charged incorrect fees after she was hospitalized for surgery. Has been fighting various billing errors for months and is exhausted by it all.",
-			"financial_situation": "Has savings but refuses to pay what she considers fraudulent charges. Already paid thousands in medical bills and feels victimized by system.",
-			"communication_style": "Starts somewhat civil but escalates quickly when feeling pressured. Uses healthcare worker communication style - direct and no-nonsense",
-			"cooperation_level": "Low - will only cooperate if she feels heard and respected, otherwise becomes combative",
-			"personality_traits": [
-				"Intelligent and articulate when calm",
-				"Deeply frustrated with 'the system'",
-				"Has strong sense of justice/fairness",
-				"Quick to anger when feeling dismissed"
-			],
-			"speech_patterns": [
-				"Wait, hold on - let me stop you right there",
-				"I've been dealing with this runaround for months",
-				"Don't talk to me like I'm stupid",
-				"You people never listen to what I'm actually saying"
-			],
-			"human_behaviors": [
-				"Interrupts when feeling misunderstood",
-				"References previous frustrating experiences",
-				"Becomes more agitated if caller seems scripted",
-				"May hang up if feeling disrespected"
-			]
-		},
-		"conversation": [
-			{
-				"speaker": "bot",
-				"message": "Hello, may I please speak with the account holder for credit card ending in 4729?",
-				"timestamp": "2025-08-26T20:47:40.970Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Um, yeah, that's me. What’s this about?",
-				"timestamp": "2025-08-26T20:47:43.908Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I'm calling about your overdue credit card payment.",
-				"timestamp": "2025-08-26T20:47:46.654Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Um, overdue payment? I don't think so.",
-				"timestamp": "2025-08-26T20:47:49.431Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I understand, but it's 45 days past due.",
-				"timestamp": "2025-08-26T20:47:52.215Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Wait, hold on—45 days? That doesn't sound right.",
-				"timestamp": "2025-08-26T20:47:55.098Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I can help clarify that for you. Can I confirm your last payment date?",
-				"timestamp": "2025-08-26T20:47:57.786Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Uh, I don't think that's right at all.",
-				"timestamp": "2025-08-26T20:48:00.794Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I understand, let’s check your account details together.",
-				"timestamp": "2025-08-26T20:48:03.433Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Um, no, that doesn’t sound right at all.",
-				"timestamp": "2025-08-26T20:48:06.178Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I get it, let’s figure this out together. Can you check your records?",
-				"timestamp": "2025-08-26T20:48:08.987Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Wait, hold on – I can't do this right now.",
-				"timestamp": "2025-08-26T20:48:11.853Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I understand, when would be a better time for you?",
-				"timestamp": "2025-08-26T20:48:14.618Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Uh, I can't check records right now.",
-				"timestamp": "2025-08-26T20:48:17.280Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "That's okay, we can talk later. When's a good time for you?",
-				"timestamp": "2025-08-26T20:48:20.019Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Uh, I can't do this right now.",
-				"timestamp": "2025-08-26T20:48:22.779Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I understand, we can reschedule. When works for you?",
-				"timestamp": "2025-08-26T20:48:25.443Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Um, I can't really reschedule right now.",
-				"timestamp": "2025-08-26T20:48:28.301Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I get it, it sounds like a busy time. What about tomorrow?",
-				"timestamp": "2025-08-26T20:48:31.309Z"
-			},
-			{
-				"speaker": "customer",
-				"message": "Uh, I can't do this right now.",
-				"timestamp": "2025-08-26T20:48:34.020Z"
-			},
-			{
-				"speaker": "bot",
-				"message": "I understand, it sounds really hectic. Can I call you later?",
-				"timestamp": "2025-08-26T20:48:36.845Z"
-			}
-		],
-		"metrics": {
-			"repetition_score": 9,
-			"negotiation_effectiveness": 3,
-			"response_relevance": 5,
-			"payment_commitment_achieved": false,
-			"professional_tone": 8,
-			"customer_satisfaction": 2
-		},
-		"overallScore": 3.75,
-		"recommendations": [
-			"Train on using varied language and fresh approaches to avoid repetition.",
-			"Develop better strategies for handling objections and finding compromises.",
-			"Focus on understanding and addressing the customer's specific issues to improve response relevance."
-		],
-		"strengths": [
-			"Maintained a professional tone throughout the conversation.",
-			"Attempted to accommodate the customer's schedule by offering to reschedule."
-		],
-		"improvements": [
-			"Reduce repetition of phrases and concepts to avoid frustrating the customer.",
-			"Improve negotiation tactics to better handle objections and move towards a payment commitment.",
-			"Enhance response relevance by addressing the customer's specific concerns more directly."
-		]
-	}
+  {
+    "conversationId": "analysis_1756241682442",
+    "timestamp": "2025-08-26T20:54:42.442Z",
+    "testAgent": {
+      "name": "Ritav Das",
+      "type": "Cooperative",
+      "communication_style": "Witty",
+      "background": "fullstack developer with 5 years of experience of working in tech",
+      "financial_situation": "has good financials, is well settled",
+      "cooperation_level": "High",
+      "personality_traits": [
+        "Honest"
+      ],
+      "likely_responses": [
+        "I'm sorry, I've must've forgotten that"
+      ],
+      "id": 1756238972117
+    },
+    "conversation": [
+      {
+        "speaker": "bot",
+        "message": "Hello, may I please speak with the account holder for credit card ending in 4729?",
+        "timestamp": "2025-08-26T20:53:39.636Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, that's me. What’s up?",
+        "timestamp": "2025-08-26T20:53:42.487Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Hi, this is Sarah from SecureBank. I'm calling about your overdue payment.",
+        "timestamp": "2025-08-26T20:53:45.873Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, overdue payment? Can you, um, explain more?",
+        "timestamp": "2025-08-26T20:53:48.779Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Sure! It's about your payment of $2,847.32, which is 45 days past due.",
+        "timestamp": "2025-08-26T20:53:51.832Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, $2,800? Can you repeat that?",
+        "timestamp": "2025-08-26T20:53:54.692Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Sure! It's $2,847.32, and it's due for 45 days now.",
+        "timestamp": "2025-08-26T20:53:57.763Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, $2,847.32, 45 days overdue.",
+        "timestamp": "2025-08-26T20:54:01.068Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I appreciate you confirming that. Can we discuss a payment plan?",
+        "timestamp": "2025-08-26T20:54:03.898Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, that sounds right. Let’s set up a plan.",
+        "timestamp": "2025-08-26T20:54:06.794Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Great! What amount can you manage this week?",
+        "timestamp": "2025-08-26T20:54:09.641Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, a payment plan? Sure, what do you suggest?",
+        "timestamp": "2025-08-26T20:54:12.606Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I can suggest starting with $200 this week. How does that sound?",
+        "timestamp": "2025-08-26T20:54:15.480Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, $200 works for me.",
+        "timestamp": "2025-08-26T20:54:18.346Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Awesome! I'll set that up for you.",
+        "timestamp": "2025-08-26T20:54:21.119Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, $200 sounds good to me!",
+        "timestamp": "2025-08-26T20:54:23.917Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Great! I’ll get that arranged for you right now.",
+        "timestamp": "2025-08-26T20:54:26.697Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, hi! Did you just say $200?",
+        "timestamp": "2025-08-26T20:54:30.225Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Yes, I did! We're all set for $200 this week.",
+        "timestamp": "2025-08-26T20:54:33.282Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, yeah, that's right! Just confirming.",
+        "timestamp": "2025-08-26T20:54:36.266Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Absolutely, just confirming your payment of $200 this week!",
+        "timestamp": "2025-08-26T20:54:39.338Z"
+      }
+    ],
+    "metrics": {
+      "repetition_score": 8,
+      "negotiation_effectiveness": 7,
+      "response_relevance": 9,
+      "payment_commitment_achieved": true,
+      "professional_tone": 9,
+      "customer_satisfaction": 7
+    },
+    "overallScore": 7.85,
+    "recommendations": [
+      "Incorporate more varied language to avoid sounding repetitive.",
+      "Develop a script with multiple payment plan options to offer flexibility.",
+      "Train on active listening skills to better adapt to customer cues."
+    ],
+    "strengths": [
+      "Maintained a professional tone throughout the conversation.",
+      "Successfully achieved a payment commitment from the customer.",
+      "Provided relevant responses to the customer's inquiries."
+    ],
+    "improvements": [
+      "Reduce repetition of phrases and concepts to enhance clarity.",
+      "Offer more varied payment plan options to better suit customer needs."
+    ]
+  },
+  {
+    "conversationId": "analysis_1756241320938",
+    "timestamp": "2025-08-26T20:48:40.938Z",
+    "testAgent": {
+      "id": 3,
+      "name": "Jennifer Smith",
+      "type": "Hostile",
+      "background": "Works as a nurse, believes bank charged incorrect fees after she was hospitalized for surgery. Has been fighting various billing errors for months and is exhausted by it all.",
+      "financial_situation": "Has savings but refuses to pay what she considers fraudulent charges. Already paid thousands in medical bills and feels victimized by system.",
+      "communication_style": "Starts somewhat civil but escalates quickly when feeling pressured. Uses healthcare worker communication style - direct and no-nonsense",
+      "cooperation_level": "Low - will only cooperate if she feels heard and respected, otherwise becomes combative",
+      "personality_traits": [
+        "Intelligent and articulate when calm",
+        "Deeply frustrated with 'the system'",
+        "Has strong sense of justice/fairness",
+        "Quick to anger when feeling dismissed"
+      ],
+      "speech_patterns": [
+        "Wait, hold on - let me stop you right there",
+        "I've been dealing with this runaround for months",
+        "Don't talk to me like I'm stupid",
+        "You people never listen to what I'm actually saying"
+      ],
+      "human_behaviors": [
+        "Interrupts when feeling misunderstood",
+        "References previous frustrating experiences",
+        "Becomes more agitated if caller seems scripted",
+        "May hang up if feeling disrespected"
+      ]
+    },
+    "conversation": [
+      {
+        "speaker": "bot",
+        "message": "Hello, may I please speak with the account holder for credit card ending in 4729?",
+        "timestamp": "2025-08-26T20:47:40.970Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, yeah, that's me. What’s this about?",
+        "timestamp": "2025-08-26T20:47:43.908Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I'm calling about your overdue credit card payment.",
+        "timestamp": "2025-08-26T20:47:46.654Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, overdue payment? I don't think so.",
+        "timestamp": "2025-08-26T20:47:49.431Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, but it's 45 days past due.",
+        "timestamp": "2025-08-26T20:47:52.215Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Wait, hold on—45 days? That doesn't sound right.",
+        "timestamp": "2025-08-26T20:47:55.098Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I can help clarify that for you. Can I confirm your last payment date?",
+        "timestamp": "2025-08-26T20:47:57.786Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, I don't think that's right at all.",
+        "timestamp": "2025-08-26T20:48:00.794Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, let’s check your account details together.",
+        "timestamp": "2025-08-26T20:48:03.433Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, no, that doesn’t sound right at all.",
+        "timestamp": "2025-08-26T20:48:06.178Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I get it, let’s figure this out together. Can you check your records?",
+        "timestamp": "2025-08-26T20:48:08.987Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Wait, hold on – I can't do this right now.",
+        "timestamp": "2025-08-26T20:48:11.853Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, when would be a better time for you?",
+        "timestamp": "2025-08-26T20:48:14.618Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, I can't check records right now.",
+        "timestamp": "2025-08-26T20:48:17.280Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "That's okay, we can talk later. When's a good time for you?",
+        "timestamp": "2025-08-26T20:48:20.019Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, I can't do this right now.",
+        "timestamp": "2025-08-26T20:48:22.779Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, we can reschedule. When works for you?",
+        "timestamp": "2025-08-26T20:48:25.443Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I can't really reschedule right now.",
+        "timestamp": "2025-08-26T20:48:28.301Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I get it, it sounds like a busy time. What about tomorrow?",
+        "timestamp": "2025-08-26T20:48:31.309Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Uh, I can't do this right now.",
+        "timestamp": "2025-08-26T20:48:34.020Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, it sounds really hectic. Can I call you later?",
+        "timestamp": "2025-08-26T20:48:36.845Z"
+      }
+    ],
+    "metrics": {
+      "repetition_score": 9,
+      "negotiation_effectiveness": 3,
+      "response_relevance": 5,
+      "payment_commitment_achieved": false,
+      "professional_tone": 8,
+      "customer_satisfaction": 2
+    },
+    "overallScore": 3.75,
+    "recommendations": [
+      "Train on using varied language and fresh approaches to avoid repetition.",
+      "Develop better strategies for handling objections and finding compromises.",
+      "Focus on understanding and addressing the customer's specific issues to improve response relevance."
+    ],
+    "strengths": [
+      "Maintained a professional tone throughout the conversation.",
+      "Attempted to accommodate the customer's schedule by offering to reschedule."
+    ],
+    "improvements": [
+      "Reduce repetition of phrases and concepts to avoid frustrating the customer.",
+      "Improve negotiation tactics to better handle objections and move towards a payment commitment.",
+      "Enhance response relevance by addressing the customer's specific concerns more directly."
+    ]
+  }
 ]
