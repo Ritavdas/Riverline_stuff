@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -13,7 +12,7 @@ from livekit.agents import (
     WorkerOptions,
     cli,
 )
-from livekit.plugins import openai, silero
+from livekit.plugins import deepgram, openai, silero
 
 load_dotenv()
 logger = logging.getLogger("debt-collection-agent")
@@ -134,20 +133,23 @@ async def entrypoint(ctx: JobContext):
         except Exception as e:
             logger.error(f"Failed to start recording: {e}")
 
-    # Create agent session with OpenAI components
+    # Create agent session with Deepgram STT and OpenAI LLM/TTS
     session = AgentSession(
         vad=ctx.proc.userdata["vad"],
-        stt=openai.STT(
-            model="whisper-1",  # Best overall for natural conversation
+        stt=deepgram.STT(
+            model="nova-2-phonecall",  # Optimized for phone call audio quality
+            language="en",
+            smart_format=True,  # Auto-format numbers, dates, etc.
+            punctuate=True,  # Add punctuation for better LLM processing
         ),
         llm=openai.LLM(
             model="gpt-4o",  # Superior conversational abilities and human-like responses
             temperature=0.6,  # Slightly lower for more consistent professional tone
         ),
-        tts=openai.TTS(
-            model="tts-1-hd",  # Higher quality model for more natural voice
-            voice="alloy",  # More natural and professional sounding than nova
-            response_format="wav",
+        tts=deepgram.TTS(
+            model="aura-2-arcas-en",  # Higher quality model for more natural voice
+            # voice="alloy",  # More natural and professional sounding than nova
+            # response_format="wav",
         ),
     )
 
