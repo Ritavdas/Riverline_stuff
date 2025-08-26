@@ -2,6 +2,7 @@ import express, { json, urlencoded } from "express";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { promises as fs } from "fs";
+import fsSync from "fs";
 import OpenAI from "openai";
 import dotenv from "dotenv";
 
@@ -284,6 +285,10 @@ app.get("/simulate", (req, res) => {
 
 app.get("/history", (req, res) => {
 	res.sendFile(join(__dirname, "public", "history.html"));
+});
+
+app.get("/self-improve", (req, res) => {
+	res.sendFile(join(__dirname, "public", "self-improve.html"));
 });
 
 // API Routes
@@ -834,6 +839,448 @@ async function saveConversationAnalysis(analysisResult) {
 	}
 }
 
+// Self-Improvement API Routes
+const SELF_IMPROVE_DIR = join(DATA_DIR, "self_improve");
+let improvementSessions = new Map(); // Store active improvement sessions
+
+// Self-improvement session management
+app.post("/api/self-improve/start", async (req, res) => {
+	try {
+		const { personalityId, targetScore, maxIterations } = req.body;
+		
+		// Validate input
+		if (!personalityId || !targetScore || !maxIterations) {
+			return res.json({ success: false, error: "Missing required parameters" });
+		}
+		
+		// Get test agent
+		const testAgents = await readJsonFile(TEST_AGENTS_FILE);
+		const testAgent = testAgents.find(agent => agent.id === personalityId);
+		if (!testAgent) {
+			return res.json({ success: false, error: "Test agent not found" });
+		}
+		
+		// Get current main agent prompt
+		const mainAgent = await readJsonFile(MAIN_AGENT_FILE);
+		const initialPrompt = mainAgent?.prompt || "You are a debt collection agent.";
+		
+		// Create improvement session
+		const sessionId = Date.now().toString();
+		const session = {
+			id: sessionId,
+			testAgent,
+			targetScore: parseFloat(targetScore),
+			maxIterations: parseInt(maxIterations),
+			currentIteration: 0,
+			currentPrompt: initialPrompt,
+			originalPrompt: initialPrompt,
+			bestScore: 0,
+			bestPrompt: initialPrompt,
+			iterationHistory: [],
+			completed: false,
+			success: false,
+			startTime: new Date().toISOString(),
+			latestChange: "Starting self-improvement process..."
+		};
+		
+		improvementSessions.set(sessionId, session);
+		
+		// Start improvement process in background
+		runSelfImprovement(sessionId).catch(error => {
+			console.error(`Self-improvement session ${sessionId} failed:`, error);
+			const session = improvementSessions.get(sessionId);
+			if (session) {
+				session.completed = true;
+				session.error = error.message;
+			}
+		});
+		
+		res.json({ success: true, sessionId });
+		
+	} catch (error) {
+		console.error('Error starting self-improvement:', error);
+		res.json({ success: false, error: error.message });
+	}
+});
+
+app.get("/api/self-improve/status/:sessionId", (req, res) => {
+	const { sessionId } = req.params;
+	const session = improvementSessions.get(sessionId);
+	
+	if (!session) {
+		return res.json({ success: false, error: "Session not found" });
+	}
+	
+	// Return session status without exposing sensitive data
+	res.json({
+		success: true,
+		currentIteration: session.currentIteration,
+		maxIterations: session.maxIterations,
+		currentScore: session.bestScore,
+		targetScore: session.targetScore,
+		completed: session.completed,
+		latestChange: session.latestChange,
+		iterationHistory: session.iterationHistory,
+		originalPrompt: session.completed ? session.originalPrompt : undefined,
+		bestPrompt: session.completed ? session.bestPrompt : undefined,
+		finalScore: session.completed ? session.bestScore : undefined
+	});
+});
+
+app.post("/api/self-improve/stop", (req, res) => {
+	const { sessionId } = req.body;
+	const session = improvementSessions.get(sessionId);
+	
+	if (!session) {
+		return res.json({ success: false, error: "Session not found" });
+	}
+	
+	session.completed = true;
+	session.stopped = true;
+	
+	res.json({ success: true });
+});
+
+// Get historical sessions for a personality
+app.get("/api/self-improve/history/:agentId", async (req, res) => {
+	try {
+		const agentId = parseInt(req.params.agentId);
+		const sessions = [];
+		
+		// Read all session files
+		const selfImproveDir = join(DATA_DIR, "self_improve");
+		if (fsSync.existsSync(selfImproveDir)) {
+			const files = fsSync.readdirSync(selfImproveDir);
+			
+			for (const file of files) {
+				if (file.startsWith('session_') && file.endsWith('.json')) {
+					try {
+						const sessionData = await readJsonFile(join(selfImproveDir, file));
+						// Filter by agent ID and only include completed sessions
+						if (sessionData && sessionData.testAgent && sessionData.testAgent.id === agentId && sessionData.completed) {
+							sessions.push({
+								id: sessionData.id,
+								agentName: sessionData.testAgent.name,
+								bestScore: sessionData.bestScore,
+								finalScore: sessionData.bestScore,
+								originalPrompt: sessionData.originalPrompt,
+								bestPrompt: sessionData.bestPrompt,
+								iterationHistory: sessionData.iterationHistory || [],
+								startTime: sessionData.startTime,
+								endTime: sessionData.endTime,
+								success: sessionData.success,
+								maxIterations: sessionData.maxIterations,
+								targetScore: sessionData.targetScore
+							});
+						}
+					} catch (error) {
+						console.log(`Error reading session file ${file}:`, error.message);
+					}
+				}
+			}
+		}
+		
+		// Sort by start time (newest first)
+		sessions.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+		
+		res.json({ success: true, sessions });
+	} catch (error) {
+		console.error("Error fetching historical sessions:", error);
+		res.json({ success: false, error: error.message });
+	}
+});
+
+// Core self-improvement logic
+async function runSelfImprovement(sessionId) {
+	const session = improvementSessions.get(sessionId);
+	if (!session) return;
+	
+	console.log(`Starting self-improvement session ${sessionId} for ${session.testAgent.name}`);
+	
+	while (session.currentIteration < session.maxIterations && 
+		   session.bestScore < session.targetScore && 
+		   !session.completed && 
+		   !session.stopped) {
+		
+		session.currentIteration++;
+		console.log(`Session ${sessionId}: Starting iteration ${session.currentIteration}`);
+		
+		try {
+			// Test current prompt against the personality
+			const testResult = await testPromptAgainstPersonality(session.currentPrompt, session.testAgent);
+			
+			// Track this iteration
+			const iteration = {
+				iteration: session.currentIteration,
+				prompt: session.currentPrompt,
+				score: testResult.score,
+				analysis: testResult.analysis,
+				timestamp: new Date().toISOString()
+			};
+			session.iterationHistory.push(iteration);
+			
+			// Update best score if improved
+			if (testResult.score > session.bestScore) {
+				session.bestScore = testResult.score;
+				session.bestPrompt = session.currentPrompt;
+			}
+			
+			console.log(`Session ${sessionId}: Iteration ${session.currentIteration} score: ${testResult.score}`);
+			
+			// Check if target reached
+			if (testResult.score >= session.targetScore) {
+				session.completed = true;
+				session.success = true;
+				session.latestChange = `🎉 Target score achieved! Final score: ${testResult.score.toFixed(1)}/10`;
+				break;
+			}
+			
+			// If not the last iteration, generate improvements
+			if (session.currentIteration < session.maxIterations) {
+				session.latestChange = `Iteration ${session.currentIteration} completed (${testResult.score.toFixed(1)}/10). Analyzing failures and improving prompt...`;
+				
+				// Generate improved prompt using AI
+				const improvements = await analyzeFailuresAndGenerateImprovements(
+					session.currentPrompt,
+					testResult.analysis,
+					session.testAgent
+				);
+				
+				session.currentPrompt = improvements.improvedPrompt;
+				session.latestChange = improvements.changeDescription;
+				
+				// Small delay between iterations
+				await new Promise(resolve => setTimeout(resolve, 1000));
+			}
+			
+		} catch (error) {
+			console.error(`Session ${sessionId}: Error in iteration ${session.currentIteration}:`, error);
+			session.latestChange = `Error in iteration ${session.currentIteration}: ${error.message}`;
+			break;
+		}
+	}
+	
+	// Mark as completed if not already
+	if (!session.completed) {
+		session.completed = true;
+		session.success = session.bestScore >= session.targetScore;
+		session.latestChange = session.success 
+			? `🎉 Self-improvement completed successfully! Final score: ${session.bestScore.toFixed(1)}/10`
+			: `⏱️ Self-improvement completed after ${session.maxIterations} iterations. Best score: ${session.bestScore.toFixed(1)}/10`;
+	}
+	
+	console.log(`Session ${sessionId}: Self-improvement completed. Best score: ${session.bestScore.toFixed(1)}/10`);
+	
+	// Save session results to file
+	await saveSelfImprovementSession(session);
+}
+
+// Generate bot response for self-improvement testing
+async function generateBotResponse(prompt, conversationHistory, testAgent) {
+	try {
+		const contextPrompt = `${prompt}
+
+You are now in a phone conversation with ${testAgent.name}, a ${testAgent.type.toLowerCase()} customer.
+Customer Background: ${testAgent.background}
+Customer Communication Style: ${testAgent.communication_style}
+
+Conversation so far:
+${conversationHistory.map(msg => `${msg.speaker === 'bot' ? 'You' : testAgent.name}: ${msg.message}`).join('\n')}
+
+Generate your next response as the debt collection agent. Keep it natural, conversational, and appropriate for a phone call. Be concise (1-2 sentences max).`;
+
+		const response = await openai.chat.completions.create({
+			model: "gpt-4o",
+			messages: [{ role: "user", content: contextPrompt }],
+			temperature: 0.7,
+			max_tokens: 150
+		});
+
+		return response.choices[0].message.content.trim();
+		
+	} catch (error) {
+		console.error('Error generating bot response:', error);
+		return "I'd like to discuss your account with you.";
+	}
+}
+
+// Generate customer response for self-improvement testing
+async function generateCustomerResponse(conversationHistory, testAgent) {
+	try {
+		const customerPrompt = `You are ${testAgent.name}, a ${testAgent.type.toLowerCase()} customer being called by a debt collector.
+
+Your Profile:
+- Background: ${testAgent.background}
+- Financial Situation: ${testAgent.financial_situation}
+- Communication Style: ${testAgent.communication_style}
+- Cooperation Level: ${testAgent.cooperation_level}
+- Personality Traits: ${testAgent.personality_traits ? testAgent.personality_traits.join(', ') : 'N/A'}
+- Typical Speech Patterns: ${testAgent.speech_patterns ? testAgent.speech_patterns.join(' | ') : 'N/A'}
+
+Conversation so far:
+${conversationHistory.map(msg => `${msg.speaker === 'bot' ? 'Debt Collector' : 'You'}: ${msg.message}`).join('\n')}
+
+Generate your next response as ${testAgent.name}. Stay completely in character based on your personality profile. Keep your response natural and conversational (1-2 sentences max).`;
+
+		const response = await openai.chat.completions.create({
+			model: "gpt-4o", 
+			messages: [{ role: "user", content: customerPrompt }],
+			temperature: 0.8,
+			max_tokens: 150
+		});
+
+		return response.choices[0].message.content.trim();
+		
+	} catch (error) {
+		console.error('Error generating customer response:', error);
+		return testAgent.speech_patterns && testAgent.speech_patterns[0] ? testAgent.speech_patterns[0] : "I'm not sure I understand.";
+	}
+}
+
+// Test a prompt against a specific personality
+async function testPromptAgainstPersonality(prompt, testAgent) {
+	try {
+		// Run a single conversation simulation
+		const conversation = [];
+		let currentMessage = null;
+		const maxMessages = 14; // Limit conversation length
+		
+		// Start conversation
+		const botResponse = await generateBotResponse(prompt, [], testAgent);
+		currentMessage = { speaker: 'bot', message: botResponse, timestamp: new Date().toISOString() };
+		conversation.push(currentMessage);
+		
+		// Continue conversation
+		for (let i = 0; i < maxMessages / 2; i++) {
+			// Get customer response
+			const customerResponse = await generateCustomerResponse(conversation, testAgent);
+			currentMessage = { speaker: 'customer', message: customerResponse, timestamp: new Date().toISOString() };
+			conversation.push(currentMessage);
+			
+			// Get bot response
+			if (conversation.length < maxMessages) {
+				const nextBotResponse = await generateBotResponse(prompt, conversation, testAgent);
+				currentMessage = { speaker: 'bot', message: nextBotResponse, timestamp: new Date().toISOString() };
+				conversation.push(currentMessage);
+			}
+		}
+		
+		// Analyze the conversation
+		const analysis = await analyzeConversationMetrics(conversation, testAgent);
+		
+		return {
+			score: analysis.overallScore || 0,
+			conversation,
+			analysis
+		};
+		
+	} catch (error) {
+		console.error('Error testing prompt against personality:', error);
+		return {
+			score: 0,
+			conversation: [],
+			analysis: { error: error.message }
+		};
+	}
+}
+
+// Analyze failures and generate prompt improvements
+async function analyzeFailuresAndGenerateImprovements(currentPrompt, analysisResult, testAgent) {
+	try {
+		const improvementPrompt = `You are an expert prompt engineer specializing in debt collection conversation optimization. 
+
+Analyze this debt collection agent prompt and its performance, then provide an improved version.
+
+CURRENT PROMPT:
+"${currentPrompt}"
+
+PERFORMANCE ANALYSIS:
+- Overall Score: ${analysisResult.overallScore || 'N/A'}/10
+- Issues Found: ${JSON.stringify(analysisResult.improvements || [], null, 2)}
+- Strengths to Preserve: ${JSON.stringify(analysisResult.strengths || [], null, 2)}
+
+TARGET CUSTOMER TYPE: ${testAgent.type}
+CUSTOMER PROFILE:
+- Name: ${testAgent.name}
+- Communication Style: ${testAgent.communication_style}
+- Cooperation Level: ${testAgent.cooperation_level}
+- Background: ${testAgent.background}
+
+SPECIFIC FAILURE PATTERNS TO ADDRESS:
+${analysisResult.improvements ? analysisResult.improvements.map(issue => `- ${issue}`).join('\n') : 'No specific issues identified'}
+
+TASK: 
+Rewrite the prompt to be more effective for this specific customer type. Focus on:
+1. Addressing the specific failure patterns mentioned above
+2. Adapting to the customer's communication style and cooperation level
+3. Preserving successful elements from the original prompt
+4. Being more specific about tone, approach, and conversation flow
+
+Return your response in this JSON format:
+{
+  "improvedPrompt": "The complete improved prompt here",
+  "changeDescription": "Brief description of key changes made (max 100 chars)",
+  "rationale": "Explanation of why these changes will improve performance"
+}`;
+
+		const response = await openai.chat.completions.create({
+			model: "gpt-4o",
+			messages: [{ role: "user", content: improvementPrompt }],
+			temperature: 0.3,
+			max_tokens: 1000
+		});
+		
+		const responseText = response.choices[0].message.content.trim();
+		
+		// Parse JSON response
+		let improvements;
+		try {
+			const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+			const jsonText = jsonMatch ? jsonMatch[0] : responseText;
+			improvements = JSON.parse(jsonText);
+		} catch (parseError) {
+			console.error('Error parsing improvement JSON:', parseError);
+			// Fallback improvement
+			improvements = {
+				improvedPrompt: currentPrompt + "\n\nBe more empathetic and understanding in your approach.",
+				changeDescription: "Added empathy instructions",
+				rationale: "Fallback improvement due to parsing error"
+			};
+		}
+		
+		return improvements;
+		
+	} catch (error) {
+		console.error('Error generating improvements:', error);
+		// Fallback improvement
+		return {
+			improvedPrompt: currentPrompt + "\n\nBe more professional and courteous.",
+			changeDescription: "Added professionalism instructions",
+			rationale: "Fallback improvement due to API error"
+		};
+	}
+}
+
+// Save self-improvement session to file
+async function saveSelfImprovementSession(session) {
+	try {
+		// Ensure self-improve directory exists
+		await fs.mkdir(SELF_IMPROVE_DIR, { recursive: true });
+		
+		const sessionFile = join(SELF_IMPROVE_DIR, `session_${session.id}.json`);
+		const sessionData = {
+			...session,
+			endTime: new Date().toISOString()
+		};
+		
+		await fs.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
+		console.log(`Self-improvement session ${session.id} saved to file`);
+		
+	} catch (error) {
+		console.error('Error saving self-improvement session:', error);
+	}
+}
+
 async function getConversationHistory() {
 	try {
 		const data = await fs.readFile(ANALYSIS_FILE, 'utf8');
@@ -853,7 +1300,9 @@ initializeData().then(() => {
 		console.log(`📋 Homepage: http://localhost:${PORT}/`);
 		console.log(`👥 Test Agents: http://localhost:${PORT}/test-agents`);
 		console.log(`💬 Simulate: http://localhost:${PORT}/simulate`);
+		console.log(`🧠 Self-Improve: http://localhost:${PORT}/self-improve`);
 		console.log(`📊 History & Analysis: http://localhost:${PORT}/history`);
 		console.log(`🔬 AI Analysis System: Powered by GPT-4o for conversation evaluation`);
+		console.log(`🚀 Self-Improvement Engine: AI-powered prompt optimization`);
 	});
 });
