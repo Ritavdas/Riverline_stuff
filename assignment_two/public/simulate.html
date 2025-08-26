@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-gray-50 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white shadow-sm border-b">
@@ -26,6 +28,9 @@
                     <a href="/simulate" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">
                         <i class="fas fa-comments mr-1"></i> Simulate
                     </a>
+                    <a href="/history" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-history mr-1"></i> History
+                    </a>
                 </div>
             </div>
         </div>
@@ -35,7 +40,8 @@
         <!-- Header Section -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-gray-900 mb-2">Conversation Simulation</h2>
-            <p class="text-gray-600">Test your debt collection agent against different customer personalities in real-time conversations.</p>
+            <p class="text-gray-600">Test your debt collection agent against different customer personalities in
+                real-time conversations.</p>
         </div>
 
         <!-- Status Message -->
@@ -47,7 +53,7 @@
                 <i class="fas fa-cog text-blue-600 mr-2"></i>
                 Simulation Configuration
             </h3>
-            
+
             <div class="grid md:grid-cols-2 gap-6">
                 <!-- Test Agent Selection -->
                 <div>
@@ -55,7 +61,8 @@
                         <i class="fas fa-user text-blue-600 mr-1"></i>
                         Select Test Agent (Customer Personality)
                     </label>
-                    <select id="testAgentSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select id="testAgentSelect"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="">Loading test agents...</option>
                     </select>
                 </div>
@@ -67,11 +74,13 @@
                         Simulation Mode
                     </label>
                     <div class="flex space-x-4">
-                        <button id="autoSimulateBtn" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <button id="autoSimulateBtn"
+                            class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                             <i class="fas fa-magic mr-2"></i>
                             Auto-Simulate
                         </button>
-                        <button id="manualSimulateBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <button id="manualSimulateBtn"
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="fas fa-keyboard mr-2"></i>
                             Manual Chat
                         </button>
@@ -97,7 +106,8 @@
                             <i class="fas fa-comments text-green-600 mr-2"></i>
                             Conversation
                         </h3>
-                        <p class="text-sm text-gray-600">Live conversation between debt collection agent and customer</p>
+                        <p class="text-sm text-gray-600">Live conversation between debt collection agent and customer
+                        </p>
                     </div>
 
                     <!-- Chat Messages -->
@@ -111,13 +121,10 @@
                     <!-- Manual Input Area -->
                     <div id="manualInputArea" class="hidden border-t p-4">
                         <div class="flex space-x-3">
-                            <input 
-                                type="text" 
-                                id="messageInput" 
-                                placeholder="Type your response as the customer..."
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                            <button id="sendMessageBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <input type="text" id="messageInput" placeholder="Type your response as the customer..."
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <button id="sendMessageBtn"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -133,24 +140,30 @@
                         <i class="fas fa-gamepad text-blue-600 mr-2"></i>
                         Controls
                     </h3>
-                    
+
                     <div class="space-y-3">
-                        <button id="startConversationBtn" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" disabled>
+                        <button id="startConversationBtn"
+                            class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                            disabled>
                             <i class="fas fa-play mr-2"></i>
                             Start Conversation
                         </button>
-                        
-                        <button id="testMessageBtn" class="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+
+                        <button id="testMessageBtn"
+                            class="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
                             <i class="fas fa-bug mr-2"></i>
                             Test Message Display
                         </button>
-                        
-                        <button id="clearChatBtn" class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+
+                        <button id="clearChatBtn"
+                            class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                             <i class="fas fa-broom mr-2"></i>
                             Clear Chat
                         </button>
-                        
-                        <button id="saveConversationBtn" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors" disabled>
+
+                        <button id="saveConversationBtn"
+                            class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                            disabled>
                             <i class="fas fa-save mr-2"></i>
                             Save Conversation
                         </button>
@@ -163,7 +176,7 @@
                         <i class="fas fa-chart-line text-blue-600 mr-2"></i>
                         Conversation Stats
                     </h3>
-                    
+
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Messages:</span>
@@ -180,6 +193,86 @@
                         <div class="flex justify-between">
                             <span class="text-gray-600">Duration:</span>
                             <span id="conversationDuration" class="font-medium">0:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conversation Analysis -->
+                <div id="analysisPanel" class="hidden bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-brain text-purple-600 mr-2"></i>
+                        AI Analysis
+                        <span id="analysisLoading" class="hidden text-sm font-normal text-gray-500 ml-2">
+                            <i class="fas fa-spinner fa-spin"></i> Analyzing...
+                        </span>
+                    </h3>
+
+                    <!-- Overall Score -->
+                    <div id="overallScore" class="mb-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-700">Overall Performance</span>
+                            <span id="overallScoreValue" class="text-2xl font-bold text-blue-600">--/10</span>
+                        </div>
+                        <div id="overallScoreBar" class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div id="overallScoreFill" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Core Metrics -->
+                    <div id="coreMetrics" class="space-y-2 text-sm mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Repetition (lower is better):</span>
+                            <span id="repetitionScore" class="font-medium">--/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Negotiation Effectiveness:</span>
+                            <span id="negotiationScore" class="font-medium">--/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Response Relevance:</span>
+                            <span id="relevanceScore" class="font-medium">--/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Payment Commitment:</span>
+                            <span id="paymentCommitment" class="font-medium">--</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Professional Tone:</span>
+                            <span id="professionalScore" class="font-medium">--/10</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Customer Satisfaction:</span>
+                            <span id="satisfactionScore" class="font-medium">--/10</span>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Results -->
+                    <div id="analysisResults" class="hidden space-y-4">
+                        <!-- Strengths -->
+                        <div>
+                            <h4 class="font-medium text-green-800 mb-2">
+                                <i class="fas fa-check-circle mr-1"></i> Strengths
+                            </h4>
+                            <ul id="strengthsList" class="text-sm text-green-700 space-y-1">
+                            </ul>
+                        </div>
+
+                        <!-- Improvements -->
+                        <div>
+                            <h4 class="font-medium text-orange-800 mb-2">
+                                <i class="fas fa-exclamation-triangle mr-1"></i> Areas for Improvement
+                            </h4>
+                            <ul id="improvementsList" class="text-sm text-orange-700 space-y-1">
+                            </ul>
+                        </div>
+
+                        <!-- Recommendations -->
+                        <div>
+                            <h4 class="font-medium text-blue-800 mb-2">
+                                <i class="fas fa-lightbulb mr-1"></i> Recommendations
+                            </h4>
+                            <ul id="recommendationsList" class="text-sm text-blue-700 space-y-1">
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -214,19 +307,19 @@
             try {
                 const response = await fetch('/api/test-agents');
                 testAgents = await response.json();
-                
+
                 const select = document.getElementById('testAgentSelect');
-                
+
                 if (testAgents.length === 0) {
                     select.innerHTML = '<option value="">No test agents available - Create some first</option>';
                     return;
                 }
 
                 select.innerHTML = '<option value="">Select a test agent...</option>' +
-                    testAgents.map(agent => 
+                    testAgents.map(agent =>
                         `<option value="${agent.id}">${agent.name} (${agent.type})</option>`
                     ).join('');
-                
+
                 // Check if agent is pre-selected from URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const preSelectedAgent = urlParams.get('agent');
@@ -234,7 +327,7 @@
                     select.value = preSelectedAgent;
                     handleAgentSelection();
                 }
-                
+
             } catch (error) {
                 showStatus('Error loading test agents', 'error');
             }
@@ -244,7 +337,7 @@
         function handleAgentSelection() {
             const select = document.getElementById('testAgentSelect');
             const agentId = parseInt(select.value);
-            
+
             if (!agentId) {
                 selectedAgent = null;
                 document.getElementById('agentInfo').classList.add('hidden');
@@ -263,7 +356,7 @@
         function showAgentInfo(agent) {
             const infoDiv = document.getElementById('agentInfo');
             const detailsDiv = document.getElementById('agentDetails');
-            
+
             detailsDiv.innerHTML = `
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
@@ -277,13 +370,13 @@
                     </div>
                 </div>
             `;
-            
+
             infoDiv.classList.remove('hidden');
         }
 
         // Get type color
         function getTypeColor(type) {
-            switch(type) {
+            switch (type) {
                 case 'Cooperative': return 'bg-green-100 text-green-800';
                 case 'Neutral': return 'bg-yellow-100 text-yellow-800';
                 case 'Hostile': return 'bg-red-100 text-red-800';
@@ -301,18 +394,18 @@
             isManualMode = !autoMode;
             conversationHistory = [];
             conversationStartTime = new Date();
-            
+
             // Update UI
             document.getElementById('chatMessages').innerHTML = '';
             document.getElementById('startConversationBtn').disabled = true;
             document.getElementById('saveConversationBtn').disabled = false;
-            
+
             if (isManualMode) {
                 document.getElementById('manualInputArea').classList.remove('hidden');
             } else {
                 document.getElementById('manualInputArea').classList.add('hidden');
             }
-            
+
             // Start duration timer
             startDurationTimer();
             updateStats();
@@ -328,36 +421,41 @@
         async function runAutoSimulation() {
             try {
                 showStatus('Starting real-time conversation simulation...', 'success');
-                
+
                 console.log('Starting real-time simulation with agent:', selectedAgent.id);
-                
+
                 // Clear existing messages first
                 document.getElementById('chatMessages').innerHTML = '';
                 conversationHistory = [];
-                
+
                 // Create EventSource for Server-Sent Events
                 const eventSource = new EventSource(`/api/auto-simulate/${selectedAgent.id}`);
-                
+
                 // Handle incoming messages
-                eventSource.onmessage = function(event) {
+                eventSource.onmessage = async function (event) {
                     console.log('Received SSE event:', event.data);
-                    
+
                     try {
                         const data = JSON.parse(event.data);
-                        
+
                         if (data.type === 'message') {
                             console.log('Adding real-time message:', data.data);
                             conversationHistory.push(data.data);
                             addMessageToChat(data.data);
                             updateStats();
-                            
+
                         } else if (data.type === 'end') {
                             console.log('Conversation ended, final conversation:', data.conversation);
                             conversationHistory = data.conversation || conversationHistory;
                             eventSource.close();
-                            showStatus('Conversation completed!', 'success');
+                            showStatus('Conversation completed! Starting analysis...', 'success');
                             document.getElementById('startConversationBtn').disabled = false;
-                            
+
+                            // Trigger conversation analysis
+                            if (conversationHistory.length > 0 && selectedAgent) {
+                                await analyzeConversation(conversationHistory, selectedAgent);
+                            }
+
                         } else if (data.type === 'error') {
                             console.error('Received error:', data.error);
                             eventSource.close();
@@ -368,14 +466,14 @@
                         console.error('Error parsing SSE data:', parseError, event.data);
                     }
                 };
-                
-                eventSource.onerror = function(event) {
+
+                eventSource.onerror = function (event) {
                     console.error('EventSource error:', event);
                     eventSource.close();
                     showStatus('Connection error during simulation', 'error');
                     document.getElementById('startConversationBtn').disabled = false;
                 };
-                
+
                 // Add timeout to prevent hanging
                 setTimeout(() => {
                     if (eventSource.readyState === EventSource.OPEN) {
@@ -384,7 +482,7 @@
                         document.getElementById('startConversationBtn').disabled = false;
                     }
                 }, 60000); // 1 minute timeout
-                
+
             } catch (error) {
                 console.error('Auto-simulation error:', error);
                 showStatus('Error starting simulation: ' + error.message, 'error');
@@ -399,20 +497,20 @@
                 const response = await fetch('/api/simulate-conversation', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         testAgentId: selectedAgent.id,
                         conversationHistory: []
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.botResponse) {
                     const botMessage = { speaker: 'bot', message: result.botResponse, timestamp: new Date().toISOString() };
                     conversationHistory.push(botMessage);
                     addMessageToChat(botMessage);
                     updateStats();
-                    
+
                     document.getElementById('startConversationBtn').disabled = false;
                 } else {
                     showStatus('Error starting conversation', 'error');
@@ -428,7 +526,7 @@
         async function sendManualMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
-            
+
             if (!message) return;
 
             // Add customer message
@@ -436,7 +534,7 @@
             conversationHistory.push(customerMessage);
             addMessageToChat(customerMessage);
             updateStats();
-            
+
             messageInput.value = '';
 
             try {
@@ -444,15 +542,15 @@
                 const response = await fetch('/api/simulate-conversation', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         testAgentId: selectedAgent.id,
                         message: message,
                         conversationHistory: conversationHistory
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.botResponse) {
                     const botMessage = { speaker: 'bot', message: result.botResponse, timestamp: new Date().toISOString() };
                     conversationHistory.push(botMessage);
@@ -467,22 +565,21 @@
         // Add message to chat
         function addMessageToChat(messageObj) {
             console.log('addMessageToChat called with:', messageObj);
-            
+
             const chatMessages = document.getElementById('chatMessages');
             if (!chatMessages) {
                 console.error('chatMessages element not found');
                 return;
             }
-            
+
             const messageDiv = document.createElement('div');
-            
+
             const isBot = messageObj.speaker === 'bot';
             const timestamp = new Date(messageObj.timestamp).toLocaleTimeString();
-            
+
             messageDiv.className = `flex ${isBot ? 'justify-start' : 'justify-end'} mb-4`;
             messageDiv.innerHTML = `
-                <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                    isBot ? 'bg-blue-100 text-blue-900' : 'bg-green-100 text-green-900'
+                <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${isBot ? 'bg-blue-100 text-blue-900' : 'bg-green-100 text-green-900'
                 }">
                     <div class="flex items-center mb-1">
                         <i class="fas ${isBot ? 'fa-robot' : 'fa-user'} mr-2"></i>
@@ -492,11 +589,11 @@
                     <p class="text-sm">${messageObj.message}</p>
                 </div>
             `;
-            
+
             console.log('Appending message div to chat');
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
+
             console.log('Current chat messages count:', chatMessages.children.length);
         }
 
@@ -505,7 +602,7 @@
             const totalMessages = conversationHistory.length;
             const botMessages = conversationHistory.filter(msg => msg.speaker === 'bot').length;
             const customerMessages = conversationHistory.filter(msg => msg.speaker === 'customer').length;
-            
+
             document.getElementById('messageCount').textContent = totalMessages;
             document.getElementById('botMessageCount').textContent = botMessages;
             document.getElementById('customerMessageCount').textContent = customerMessages;
@@ -514,7 +611,7 @@
         // Start duration timer
         function startDurationTimer() {
             if (durationInterval) clearInterval(durationInterval);
-            
+
             durationInterval = setInterval(() => {
                 if (conversationStartTime) {
                     const elapsed = Math.floor((new Date() - conversationStartTime) / 1000);
@@ -530,7 +627,7 @@
             if (conversationHistory.length > 0 && !confirm('Are you sure you want to clear the current conversation?')) {
                 return;
             }
-            
+
             conversationHistory = [];
             document.getElementById('chatMessages').innerHTML = `
                 <div class="text-center text-gray-500 py-8">
@@ -538,11 +635,12 @@
                     <p>Select a test agent and start a simulation to begin conversation</p>
                 </div>
             `;
-            
+
             document.getElementById('manualInputArea').classList.add('hidden');
             document.getElementById('startConversationBtn').disabled = selectedAgent ? false : true;
             document.getElementById('saveConversationBtn').disabled = true;
-            
+            document.getElementById('analysisPanel').classList.add('hidden');
+
             if (durationInterval) clearInterval(durationInterval);
             conversationStartTime = null;
             document.getElementById('conversationDuration').textContent = '0:00';
@@ -558,7 +656,7 @@
 
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const filename = `conversation_${selectedAgent.name.replace(/\s+/g, '_')}_${timestamp}.json`;
-            
+
             const conversationData = {
                 timestamp: new Date().toISOString(),
                 testAgent: selectedAgent,
@@ -590,25 +688,138 @@
             statusEl.className = `mb-6 p-4 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
             statusEl.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>${message}`;
             statusEl.classList.remove('hidden');
-            
+
             setTimeout(() => {
                 statusEl.classList.add('hidden');
             }, 5000);
         }
 
+        // Analyze conversation using AI
+        async function analyzeConversation(conversation, testAgent) {
+            try {
+                console.log('Starting conversation analysis...');
+
+                // Show analysis panel and loading state
+                document.getElementById('analysisPanel').classList.remove('hidden');
+                document.getElementById('analysisLoading').classList.remove('hidden');
+                document.getElementById('analysisResults').classList.add('hidden');
+
+                // Reset metrics display
+                resetMetricsDisplay();
+
+                const response = await fetch('/api/analyze-conversation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        conversation: conversation,
+                        testAgent: testAgent
+                    })
+                });
+
+                const result = await response.json();
+                console.log('Analysis result:', result);
+
+                if (result.success && result.analysis) {
+                    displayAnalysisResults(result.analysis);
+                    showStatus('Conversation analysis completed!', 'success');
+                } else {
+                    showStatus('Error analyzing conversation: ' + (result.error || 'Unknown error'), 'error');
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showStatus('Error analyzing conversation: ' + error.message, 'error');
+            } finally {
+                document.getElementById('analysisLoading').classList.add('hidden');
+            }
+        }
+
+        // Display analysis results in UI
+        function displayAnalysisResults(analysis) {
+            const metrics = analysis.metrics;
+
+            // Update overall score
+            const overallScore = analysis.overallScore || 0;
+            document.getElementById('overallScoreValue').textContent = `${overallScore.toFixed(1)}/10`;
+            document.getElementById('overallScoreFill').style.width = `${(overallScore / 10) * 100}%`;
+
+            // Update score color based on performance
+            const scoreColor = overallScore >= 7 ? 'text-green-600' : overallScore >= 5 ? 'text-yellow-600' : 'text-red-600';
+            const fillColor = overallScore >= 7 ? 'bg-green-600' : overallScore >= 5 ? 'bg-yellow-600' : 'bg-red-600';
+
+            document.getElementById('overallScoreValue').className = `text-2xl font-bold ${scoreColor}`;
+            document.getElementById('overallScoreFill').className = `h-2 rounded-full ${fillColor}`;
+
+            // Update individual metrics
+            document.getElementById('repetitionScore').textContent = `${metrics.repetition_score?.toFixed(1) || '--'}/10`;
+            document.getElementById('negotiationScore').textContent = `${metrics.negotiation_effectiveness?.toFixed(1) || '--'}/10`;
+            document.getElementById('relevanceScore').textContent = `${metrics.response_relevance?.toFixed(1) || '--'}/10`;
+            document.getElementById('paymentCommitment').textContent = metrics.payment_commitment_achieved ? '✅ Yes' : '❌ No';
+            document.getElementById('professionalScore').textContent = `${metrics.professional_tone?.toFixed(1) || '--'}/10`;
+            document.getElementById('satisfactionScore').textContent = `${metrics.customer_satisfaction?.toFixed(1) || '--'}/10`;
+
+            // Display strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = '';
+            if (analysis.strengths && analysis.strengths.length > 0) {
+                analysis.strengths.forEach(strength => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${strength}`;
+                    strengthsList.appendChild(li);
+                });
+            }
+
+            // Display improvements
+            const improvementsList = document.getElementById('improvementsList');
+            improvementsList.innerHTML = '';
+            if (analysis.improvements && analysis.improvements.length > 0) {
+                analysis.improvements.forEach(improvement => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fas fa-arrow-up mr-2"></i>${improvement}`;
+                    improvementsList.appendChild(li);
+                });
+            }
+
+            // Display recommendations
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            if (analysis.recommendations && analysis.recommendations.length > 0) {
+                analysis.recommendations.forEach(recommendation => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fas fa-lightbulb mr-2"></i>${recommendation}`;
+                    recommendationsList.appendChild(li);
+                });
+            }
+
+            // Show results section
+            document.getElementById('analysisResults').classList.remove('hidden');
+        }
+
+        // Reset metrics display
+        function resetMetricsDisplay() {
+            document.getElementById('overallScoreValue').textContent = '--/10';
+            document.getElementById('overallScoreFill').style.width = '0%';
+            document.getElementById('repetitionScore').textContent = '--/10';
+            document.getElementById('negotiationScore').textContent = '--/10';
+            document.getElementById('relevanceScore').textContent = '--/10';
+            document.getElementById('paymentCommitment').textContent = '--';
+            document.getElementById('professionalScore').textContent = '--/10';
+            document.getElementById('satisfactionScore').textContent = '--/10';
+        }
+
         // Test message display function
         function testMessageDisplay() {
             console.log('Testing message display...');
-            
+
             const testMessages = [
                 { speaker: 'bot', message: 'Hello, may I please speak with the account holder for credit card ending in 4729?', timestamp: new Date().toISOString() },
                 { speaker: 'customer', message: 'Yes, this is Maria. Is this about my credit card?', timestamp: new Date().toISOString() },
                 { speaker: 'bot', message: 'Yes Maria, I\'m Sarah from SecureBank. I\'m calling about your overdue balance of $2,847.32...', timestamp: new Date().toISOString() }
             ];
-            
+
             // Clear existing messages
             document.getElementById('chatMessages').innerHTML = '';
-            
+
             // Add test messages with delay
             testMessages.forEach((msg, index) => {
                 setTimeout(() => {
@@ -616,7 +827,7 @@
                     addMessageToChat(msg);
                 }, index * 1000);
             });
-            
+
             showStatus('Test messages added to chat', 'success');
         }
 
@@ -629,7 +840,7 @@
         document.getElementById('clearChatBtn').addEventListener('click', clearChat);
         document.getElementById('saveConversationBtn').addEventListener('click', saveConversation);
         document.getElementById('sendMessageBtn').addEventListener('click', sendManualMessage);
-        
+
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 sendManualMessage();
@@ -640,4 +851,5 @@
         loadTestAgents();
     </script>
 </body>
+
 </html>

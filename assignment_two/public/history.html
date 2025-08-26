@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation History - Debt Collection Testing Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-robot text-blue-600 mr-2"></i>
+                    Debt Collection Testing Platform
+                </h1>
+                <div class="flex space-x-6">
+                    <a href="/" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-cog mr-1"></i> Main Agent
+                    </a>
+                    <a href="/test-agents" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-users mr-1"></i> Test Agents
+                    </a>
+                    <a href="/simulate" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-comments mr-1"></i> Simulate
+                    </a>
+                    <a href="/history" class="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">
+                        <i class="fas fa-history mr-1"></i> History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Conversation Analysis History</h2>
+                <p class="text-gray-600">Review past conversations and their performance analysis results.</p>
+            </div>
+            <div class="flex space-x-3">
+                <button id="refreshBtn"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i>
+                    Refresh
+                </button>
+                <button id="exportBtn"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-download mr-2"></i>
+                    Export Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="hidden mb-6 p-4 rounded-lg"></div>
+
+        <!-- Performance Overview -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Conversations</p>
+                        <p id="totalConversations" class="text-3xl font-bold text-gray-900">0</p>
+                    </div>
+                    <i class="fas fa-comments text-blue-600 text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Avg Performance</p>
+                        <p id="avgPerformance" class="text-3xl font-bold text-gray-900">0.0</p>
+                    </div>
+                    <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Payment Success</p>
+                        <p id="paymentSuccessRate" class="text-3xl font-bold text-gray-900">0%</p>
+                    </div>
+                    <i class="fas fa-dollar-sign text-yellow-600 text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Avg Satisfaction</p>
+                        <p id="avgSatisfaction" class="text-3xl font-bold text-gray-900">0.0</p>
+                    </div>
+                    <i class="fas fa-smile text-purple-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Trends Chart -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-area text-blue-600 mr-2"></i>
+                Performance Trends
+            </h3>
+            <div class="h-64">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-filter text-blue-600 mr-2"></i>
+                Filter & Search
+            </h3>
+
+            <div class="grid md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Customer Type</label>
+                    <select id="customerTypeFilter"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Types</option>
+                        <option value="Cooperative">Cooperative</option>
+                        <option value="Neutral">Neutral</option>
+                        <option value="Hostile">Hostile</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Performance Range</label>
+                    <select id="performanceFilter"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Scores</option>
+                        <option value="high">Excellent (8.0+)</option>
+                        <option value="good">Good (6.0-7.9)</option>
+                        <option value="poor">Needs Improvement (<6.0)< /option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Commitment</label>
+                    <select id="paymentFilter"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Results</option>
+                        <option value="true">Achieved</option>
+                        <option value="false">Not Achieved</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Actions</label>
+                    <button id="applyFilters"
+                        class="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversation History Table -->
+        <div class="bg-white rounded-lg shadow-sm border">
+            <div class="p-6 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-list text-blue-600 mr-2"></i>
+                    Conversation History
+                    <span id="resultsCount" class="text-sm font-normal text-gray-500 ml-2">(0 results)</span>
+                </h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date/Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Customer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Overall Score</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Key Metrics</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Payment</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conversationTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Table rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No conversation history yet</h3>
+                <p class="text-gray-500 mb-4">Run some conversations to see analysis results here</p>
+                <a href="/simulate"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>Start Your First Simulation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversation Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-900">Conversation Analysis</h3>
+                    <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Conversation -->
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-3">
+                            <i class="fas fa-comments mr-2"></i>Conversation
+                        </h4>
+                        <div id="modalConversation" class="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto">
+                            <!-- Conversation messages will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Analysis Results -->
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-3">
+                            <i class="fas fa-chart-bar mr-2"></i>Analysis Results
+                        </h4>
+                        <div id="modalAnalysis" class="space-y-4">
+                            <!-- Analysis results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+        let filteredHistory = [];
+        let trendsChart = null;
+
+        // Load conversation history on page load
+        async function loadConversationHistory() {
+            try {
+                showStatus('Loading conversation history...', 'info');
+
+                const response = await fetch('/api/conversation-history');
+                const data = await response.json();
+
+                conversationHistory = data || [];
+                filteredHistory = [...conversationHistory];
+
+                updateOverviewStats();
+                updateTrendsChart();
+                renderConversationTable();
+
+                if (conversationHistory.length === 0) {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                } else {
+                    document.getElementById('emptyState').classList.add('hidden');
+                    showStatus(`Loaded ${conversationHistory.length} conversations`, 'success');
+                }
+
+            } catch (error) {
+                console.error('Error loading history:', error);
+                showStatus('Error loading conversation history', 'error');
+            }
+        }
+
+        // Update overview statistics
+        function updateOverviewStats() {
+            if (conversationHistory.length === 0) {
+                document.getElementById('totalConversations').textContent = '0';
+                document.getElementById('avgPerformance').textContent = '0.0';
+                document.getElementById('paymentSuccessRate').textContent = '0%';
+                document.getElementById('avgSatisfaction').textContent = '0.0';
+                return;
+            }
+
+            const totalConversations = conversationHistory.length;
+            const avgPerformance = conversationHistory.reduce((sum, conv) => sum + (conv.overallScore || 0), 0) / totalConversations;
+            const paymentSuccess = conversationHistory.filter(conv => conv.metrics?.payment_commitment_achieved).length;
+            const paymentSuccessRate = (paymentSuccess / totalConversations) * 100;
+            const avgSatisfaction = conversationHistory.reduce((sum, conv) => sum + (conv.metrics?.customer_satisfaction || 0), 0) / totalConversations;
+
+            document.getElementById('totalConversations').textContent = totalConversations.toString();
+            document.getElementById('avgPerformance').textContent = avgPerformance.toFixed(1);
+            document.getElementById('paymentSuccessRate').textContent = paymentSuccessRate.toFixed(0) + '%';
+            document.getElementById('avgSatisfaction').textContent = avgSatisfaction.toFixed(1);
+        }
+
+        // Update trends chart
+        function updateTrendsChart() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+
+            if (trendsChart) {
+                trendsChart.destroy();
+            }
+
+            if (conversationHistory.length === 0) return;
+
+            // Prepare chart data (last 10 conversations)
+            const recentConversations = conversationHistory.slice(0, 10).reverse();
+            const labels = recentConversations.map((conv, index) => `Conv ${index + 1}`);
+
+            trendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Overall Score',
+                            data: recentConversations.map(conv => conv.overallScore || 0),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true
+                        },
+                        {
+                            label: 'Negotiation Effectiveness',
+                            data: recentConversations.map(conv => conv.metrics?.negotiation_effectiveness || 0),
+                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            fill: false
+                        },
+                        {
+                            label: 'Customer Satisfaction',
+                            data: recentConversations.map(conv => conv.metrics?.customer_satisfaction || 0),
+                            borderColor: 'rgb(168, 85, 247)',
+                            backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render conversation table
+        function renderConversationTable() {
+            const tableBody = document.getElementById('conversationTableBody');
+            tableBody.innerHTML = '';
+
+            document.getElementById('resultsCount').textContent = `(${filteredHistory.length} results)`;
+
+            filteredHistory.forEach((conversation, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 cursor-pointer';
+
+                const timestamp = new Date(conversation.timestamp).toLocaleString();
+                const overallScore = conversation.overallScore || 0;
+                const scoreColor = overallScore >= 7 ? 'text-green-600' : overallScore >= 5 ? 'text-yellow-600' : 'text-red-600';
+                const scoreIcon = overallScore >= 7 ? 'fa-check-circle' : overallScore >= 5 ? 'fa-exclamation-circle' : 'fa-times-circle';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${timestamp}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${conversation.testAgent?.name || 'Unknown'}</div>
+                        <div class="text-sm text-gray-500">${conversation.testAgent?.type || 'N/A'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas ${scoreIcon} ${scoreColor} mr-2"></i>
+                            <span class="text-sm font-medium ${scoreColor}">${overallScore.toFixed(1)}/10</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div>Negotiation: ${(conversation.metrics?.negotiation_effectiveness || 0).toFixed(1)}</div>
+                        <div>Relevance: ${(conversation.metrics?.response_relevance || 0).toFixed(1)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${conversation.metrics?.payment_commitment_achieved
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }">
+                            ${conversation.metrics?.payment_commitment_achieved ? '✓ Achieved' : '✗ Not Achieved'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewConversationDetail(${index})" class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-eye mr-1"></i>View Details
+                        </button>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const customerType = document.getElementById('customerTypeFilter').value;
+            const performanceRange = document.getElementById('performanceFilter').value;
+            const paymentCommitment = document.getElementById('paymentFilter').value;
+
+            filteredHistory = conversationHistory.filter(conversation => {
+                // Customer type filter
+                if (customerType && conversation.testAgent?.type !== customerType) {
+                    return false;
+                }
+
+                // Performance range filter
+                if (performanceRange) {
+                    const score = conversation.overallScore || 0;
+                    if (performanceRange === 'high' && score < 8.0) return false;
+                    if (performanceRange === 'good' && (score < 6.0 || score >= 8.0)) return false;
+                    if (performanceRange === 'poor' && score >= 6.0) return false;
+                }
+
+                // Payment commitment filter
+                if (paymentCommitment !== '') {
+                    const achieved = conversation.metrics?.payment_commitment_achieved === true;
+                    if (paymentCommitment === 'true' && !achieved) return false;
+                    if (paymentCommitment === 'false' && achieved) return false;
+                }
+
+                return true;
+            });
+
+            renderConversationTable();
+        }
+
+        // View conversation details
+        function viewConversationDetail(index) {
+            const conversation = filteredHistory[index];
+            if (!conversation) return;
+
+            // Set modal title
+            document.getElementById('modalTitle').textContent =
+                `${conversation.testAgent?.name || 'Unknown'} - ${new Date(conversation.timestamp).toLocaleDateString()}`;
+
+            // Populate conversation
+            const conversationDiv = document.getElementById('modalConversation');
+            conversationDiv.innerHTML = '';
+
+            if (conversation.conversation && conversation.conversation.length > 0) {
+                conversation.conversation.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `mb-3 ${msg.speaker === 'bot' ? 'text-blue-800' : 'text-green-800'}`;
+                    messageDiv.innerHTML = `
+                        <div class="font-medium">
+                            <i class="fas ${msg.speaker === 'bot' ? 'fa-robot' : 'fa-user'} mr-2"></i>
+                            ${msg.speaker === 'bot' ? 'Debt Collector' : conversation.testAgent?.name || 'Customer'}
+                        </div>
+                        <div class="ml-6 text-gray-700">${msg.message}</div>
+                    `;
+                    conversationDiv.appendChild(messageDiv);
+                });
+            } else {
+                conversationDiv.innerHTML = '<p class="text-gray-500">No conversation data available</p>';
+            }
+
+            // Populate analysis
+            const analysisDiv = document.getElementById('modalAnalysis');
+            const metrics = conversation.metrics || {};
+            const overallScore = conversation.overallScore || 0;
+
+            analysisDiv.innerHTML = `
+                <!-- Overall Score -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium">Overall Performance</span>
+                        <span class="text-2xl font-bold ${overallScore >= 7 ? 'text-green-600' : overallScore >= 5 ? 'text-yellow-600' : 'text-red-600'}">
+                            ${overallScore.toFixed(1)}/10
+                        </span>
+                    </div>
+                    <div class="bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${(overallScore / 10) * 100}%"></div>
+                    </div>
+                </div>
+
+                <!-- Individual Metrics -->
+                <div class="space-y-3 text-sm mb-6">
+                    <div class="flex justify-between">
+                        <span>Repetition (lower is better):</span>
+                        <span class="font-medium">${(metrics.repetition_score || 0).toFixed(1)}/10</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Negotiation Effectiveness:</span>
+                        <span class="font-medium">${(metrics.negotiation_effectiveness || 0).toFixed(1)}/10</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Response Relevance:</span>
+                        <span class="font-medium">${(metrics.response_relevance || 0).toFixed(1)}/10</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Payment Commitment:</span>
+                        <span class="font-medium">${metrics.payment_commitment_achieved ? '✅ Yes' : '❌ No'}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Professional Tone:</span>
+                        <span class="font-medium">${(metrics.professional_tone || 0).toFixed(1)}/10</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Customer Satisfaction:</span>
+                        <span class="font-medium">${(metrics.customer_satisfaction || 0).toFixed(1)}/10</span>
+                    </div>
+                </div>
+
+                <!-- Strengths, Improvements, Recommendations -->
+                ${conversation.strengths && conversation.strengths.length > 0 ? `
+                    <div class="mb-4">
+                        <h5 class="font-medium text-green-800 mb-2">
+                            <i class="fas fa-check-circle mr-1"></i>Strengths
+                        </h5>
+                        <ul class="text-sm text-green-700 space-y-1">
+                            ${conversation.strengths.map(s => `<li><i class="fas fa-check mr-2"></i>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                ${conversation.improvements && conversation.improvements.length > 0 ? `
+                    <div class="mb-4">
+                        <h5 class="font-medium text-orange-800 mb-2">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Areas for Improvement
+                        </h5>
+                        <ul class="text-sm text-orange-700 space-y-1">
+                            ${conversation.improvements.map(i => `<li><i class="fas fa-arrow-up mr-2"></i>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                ${conversation.recommendations && conversation.recommendations.length > 0 ? `
+                    <div>
+                        <h5 class="font-medium text-blue-800 mb-2">
+                            <i class="fas fa-lightbulb mr-1"></i>Recommendations
+                        </h5>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            ${conversation.recommendations.map(r => `<li><i class="fas fa-lightbulb mr-2"></i>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+            `;
+
+            // Show modal
+            document.getElementById('detailModal').classList.remove('hidden');
+            document.getElementById('detailModal').classList.add('flex');
+        }
+
+        // Export data
+        function exportData() {
+            const dataToExport = {
+                exportDate: new Date().toISOString(),
+                summary: {
+                    totalConversations: conversationHistory.length,
+                    avgPerformance: conversationHistory.reduce((sum, conv) => sum + (conv.overallScore || 0), 0) / conversationHistory.length,
+                    paymentSuccessRate: (conversationHistory.filter(conv => conv.metrics?.payment_commitment_achieved).length / conversationHistory.length) * 100
+                },
+                conversations: conversationHistory
+            };
+
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `conversation_analysis_export_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showStatus('Data exported successfully!', 'success');
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            const colorClasses = {
+                'success': 'bg-green-100 text-green-800 border border-green-200',
+                'error': 'bg-red-100 text-red-800 border border-red-200',
+                'info': 'bg-blue-100 text-blue-800 border border-blue-200'
+            };
+            const iconClasses = {
+                'success': 'fa-check-circle',
+                'error': 'fa-exclamation-circle',
+                'info': 'fa-info-circle'
+            };
+
+            statusEl.className = `mb-6 p-4 rounded-lg ${colorClasses[type] || colorClasses.info}`;
+            statusEl.innerHTML = `<i class="fas ${iconClasses[type] || iconClasses.info} mr-2"></i>${message}`;
+            statusEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                statusEl.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Event listeners
+        document.getElementById('refreshBtn').addEventListener('click', loadConversationHistory);
+        document.getElementById('exportBtn').addEventListener('click', exportData);
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('detailModal').classList.add('hidden');
+            document.getElementById('detailModal').classList.remove('flex');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('detailModal').classList.add('hidden');
+                document.getElementById('detailModal').classList.remove('flex');
+            }
+        });
+
+        // Load data on page load
+        loadConversationHistory();
+    </script>
+</body>
+
+</html>
