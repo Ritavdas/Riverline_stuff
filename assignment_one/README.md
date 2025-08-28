@@ -1,6 +1,6 @@
 # 🎯 Debt Collection Voice Agent
 
-A sophisticated AI-powered debt collection voice agent built with **LiveKit**, **Deepgram**, and **OpenAI**, capable of making natural, human-like outbound phone calls for professional debt collection conversations.
+A sophisticated AI-powered debt collection voice agent built with **LiveKit**, **Deepgram**, **Cartesia**, and **OpenAI**, capable of making natural, human-like outbound phone calls for professional debt collection conversations.
 
 ## 📽️ Demo Video
 
@@ -8,10 +8,10 @@ A sophisticated AI-powered debt collection voice agent built with **LiveKit**, *
 >
 > *A 2-3 minute walkthrough demonstrating the voice agent in action, including:*
 >
-> - *Web interface for initiating calls*
+> - *Console interface for initiating calls*
 > - *Live conversation with the AI agent*
 > - *Call recording and transcript analysis*
-> - *Risk assessment dashboard*
+> - *Console-based risk assessment output*
 
 ## 🚀 Features
 
@@ -21,30 +21,41 @@ A sophisticated AI-powered debt collection voice agent built with **LiveKit**, *
 - **📞 Outbound Calling**: Seamless integration with Twilio for real phone calls
 - **🎙️ Superior Audio Quality**: Deepgram's phone-optimized speech recognition
 - **🧠 Intelligent Responses**: GPT-4 powered conversational logic
-- **🎯 Professional Persona**: "Sarah from SecureBank" - polite but persistent
+- **🎯 Professional Persona**: "Anjali from SecureBank" - polite Indian voice agent
 
 ### Advanced Features
 
 - **📹 Call Recording**: Automatic conversation recording with LiveKit Egress
 - **📝 Real-time Transcription**: Live speech-to-text with smart formatting
 - **📊 Risk Assessment**: AI-powered analysis of customer responses
-- **🌐 Web Dashboard**: Simple interface for call management and monitoring
+- **🖥️ Console Interface**: Real-time call monitoring and logging
 - **🔊 Edge Case Handling**: Robust handling of interruptions, background noise, and unexpected responses
 
-## 🏗️ Architecture
+## 🏗️ How It Works
+
+### Architecture Overview
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Interface │────│   LiveKit Cloud │────│  Twilio Gateway │
-│   (Node.js)     │    │   (Python Agent)│    │   (SIP Trunk)   │
+│  Python Console │────│   LiveKit Cloud │────│  Twilio Gateway │
+│  debt_collector │    │   (AI Pipeline) │    │   (SIP Trunk)   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                        │                        │
          ▼                        ▼                        ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Call Management │    │   AI Pipeline   │    │  Phone Network  │
-│   & Monitoring  │    │ Deepgram + GPT4│    │  (US Numbers)   │
+│ Console Output  │    │   AI Pipeline   │    │  Phone Network  │
+│ Real-time Logs  │    │Deepgram+Cartesia│    │  (US Numbers)   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+### How It's Built
+
+1. **LiveKit Agents Framework**: Orchestrates the entire voice pipeline
+2. **Deepgram STT**: Converts phone audio to text with phone-optimized models
+3. **OpenAI GPT-4**: Powers Anjali's conversational intelligence
+4. **Cartesia TTS**: Generates natural Indian voice synthesis
+5. **Twilio SIP**: Handles actual phone call connectivity
+6. **Console Interface**: Real-time monitoring and testing
 
 ## 🛠️ Technology Stack
 
@@ -53,9 +64,9 @@ A sophisticated AI-powered debt collection voice agent built with **LiveKit**, *
 | **Core Framework** | LiveKit Agents (Python) | Voice agent orchestration |
 | **Speech Recognition** | Deepgram Nova-2 | Phone-optimized STT |
 | **Language Model** | OpenAI GPT-4 | Conversational AI |
-| **Text-to-Speech** | Deepgram Aura-2 | Natural voice synthesis |
+| **Text-to-Speech** | Cartesia Sonic-2 | Natural Indian voice synthesis |
 | **Telephony** | Twilio + LiveKit SIP | Outbound calling |
-| **Web Interface** | Node.js + Express | Call management dashboard |
+| **Console Interface** | Python Terminal | Real-time monitoring |
 | **Recording** | LiveKit Egress | Call recording & analysis |
 
 ## 📋 Prerequisites
@@ -63,10 +74,11 @@ A sophisticated AI-powered debt collection voice agent built with **LiveKit**, *
 Before setting up the project, ensure you have:
 
 - **Python 3.9+** with pip
-- **Node.js 16+** with npm
+
 - **LiveKit Cloud Account** ([signup here](https://livekit.io))
 - **Deepgram API Key** ([get free credits](https://deepgram.com))
 - **OpenAI API Key** ([get API access](https://openai.com/api))
+- **Cartesia API Key** ([get voice synthesis access](https://cartesia.ai))
 - **Twilio Account** ([free trial available](https://twilio.com))
 
 ## ⚡ Quick Start
@@ -83,15 +95,11 @@ cd agent
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# Set up Node.js environment
-cd ../web
-npm install
 ```
 
 ### 2. Configure Environment Variables
 
-Create `.env` files in both directories:
+Create `.env` file in the agent directory:
 
 **`agent/.env`:**
 
@@ -105,6 +113,7 @@ LIVEKIT_SIP_TRUNK_ID=your_sip_trunk_id
 # AI Services
 DEEPGRAM_API_KEY=your_deepgram_api_key
 OPENAI_API_KEY=your_openai_api_key
+CARTESIA_API_KEY=your_cartesia_api_key
 
 # Twilio Configuration  
 TWILIO_ACCOUNT_SID=your_twilio_sid
@@ -113,50 +122,36 @@ TWILIO_PHONE_NUMBER=+1234567890
 TWILIO_TRUNK_SID=your_trunk_sid
 ```
 
-**`web/.env`:**
-
-```bash
-LIVEKIT_URL=wss://your-project.livekit.cloud
-LIVEKIT_API_KEY=your_livekit_api_key
-LIVEKIT_API_SECRET=your_livekit_api_secret
-PORT=3000
-```
-
 ### 3. Run the Application
 
-**Terminal 1 - Start the Voice Agent:**
+**Terminal 1 - Start the Voice Agent (Wait Mode):**
 
 ```bash
 cd agent
 source venv/bin/activate
-python debt_collector.py dev
+python debt_collector.py start
 ```
 
-**Terminal 2 - Start the Web Interface:**
+The agent will now be waiting and ready to join rooms for incoming connections.
 
-```bash
-cd web
-npm start
-```
-
-**Terminal 3 - Make a Test Call:**
+**Terminal 2 - Make an Outbound Call:**
 
 ```bash
 cd agent
 python make_outbound_call.py +1234567890
 ```
 
-### 4. Access the Dashboard
+### 4. Test in Console
 
-Open your browser and navigate to `http://localhost:3000` to access the web interface.
+The agent runs directly in the console. You can see real-time logs of the conversation, connection status, and call progress in Terminal 1 where the agent is running.
 
-## 🎭 Agent Persona: "Sarah from SecureBank"
+## 🎭 Agent Persona: "Anjali from SecureBank"
 
-The AI agent is designed as **Sarah**, a professional debt collection representative with the following characteristics:
+The AI agent is designed as **Anjali**, a professional debt collection representative with authentic Indian voice characteristics and the following features:
 
 ### Conversation Flow
 
-1. **Greeting & Verification**: Polite introduction and identity confirmation
+1. **Greeting & Verification**: Personalized greeting "Hello, am i speaking to Ritav Das?" and identity confirmation
 2. **Situation Explanation**: Clear explanation of overdue payment ($2,847.32, 45 days past due)
 3. **Active Listening**: Responds appropriately to customer reactions
 4. **Solution Offering**: Flexible payment options and assistance
@@ -182,12 +177,7 @@ assignment_one/
 │   ├── requirements.txt            # Python dependencies
 │   └── .env                        # Agent configuration
 │
-├── web/                            # Node.js web interface
-│   ├── server.js                   # Express server
-│   ├── public/                     # Static web assets
-│   ├── package.json                # Node.js dependencies
-│   └── .env                        # Web configuration
-│
+
 ├── docs/                           # Documentation
 │   ├── PROJECT_DECISIONS.md        # Technical decisions & architecture
 │   ├── challenge_one.txt           # Original assignment requirements
@@ -205,7 +195,7 @@ assignment_one/
 
 ```python
 instructions=(
-    "You are Sarah, a professional and polite debt collection representative..."
+    "You are Anjali, a professional and polite debt collection representative..."
     # Modify this section to change agent personality
 )
 ```
@@ -218,8 +208,10 @@ stt=deepgram.STT(
     smart_format=True,         # Auto-format numbers/dates
     punctuate=True,           # Add punctuation
 ),
-tts=deepgram.TTS(
-    model="aura-2-arcas-en",  # Natural voice model
+tts=cartesia.TTS(
+    model="sonic-2",
+    voice="f6141af3-5f94-418c-80ed-a45d450e7e2e",  # Indian lady voice
+    language="en",
 )
 ```
 
@@ -244,145 +236,42 @@ The system includes AI-powered risk assessment of customer responses:
 - **Dispute Recognition**: Legal challenge or disagreement indicators
 - **Cooperation Score**: Overall willingness to resolve debt
 
-## 🧪 Testing & Verification
+## 🧪 Testing & Usage
 
-### Environment Check
+### Step-by-Step Testing
+
+**1. Environment Check:**
 
 ```bash
 cd agent
 python verify_setup.py
 ```
 
-### SIP Integration Test
+**2. Start Agent (Console Mode):**
 
 ```bash
-cd agent  
-python test_sip.py
+python debt_collector.py start
 ```
 
-### Manual Call Test
+The agent will show: "Waiting for connections..." and real-time logs.
+
+**3. Make Test Call:**
 
 ```bash
+# In another terminal
 cd agent
 python make_outbound_call.py +1234567890
 ```
 
-## 🔍 Troubleshooting
+**4. Monitor Console:**
+Watch Terminal 1 for live conversation logs, STT output, and agent responses.
 
-### Common Issues
+### Console Testing Features
 
-**1. "No module named 'livekit'" Error**
-
-```bash
-cd agent
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-**2. SIP Trunk Connection Failed**
-
-- Verify Twilio SIP trunk configuration
-- Check LIVEKIT_SIP_TRUNK_ID in environment variables
-- Ensure US phone number format (+1XXXXXXXXXX)
-
-**3. Audio Quality Issues**
-
-- Check network connection stability  
-- Verify Deepgram API key validity
-- Test with different phone numbers
-
-**4. Web Interface Not Loading**
-
-```bash
-cd web
-npm install
-npm start
-```
-
-### Debug Logging
-
-Enable detailed logging by setting environment variable:
-
-```bash
-export LIVEKIT_LOG_LEVEL=debug
-```
-
-## 🚀 Advanced Usage
-
-### Custom Debt Scenarios
-
-Modify the agent instructions to handle different debt types:
-
-```python
-# Credit Card Debt (default)
-debt_amount = "$2,847.32"
-days_overdue = "45 days"
-
-# Modify for other scenarios:
-# - Medical bills
-# - Student loans  
-# - Utility payments
-# - Business invoices
-```
-
-### Multi-Agent Deployment
-
-Deploy multiple agent instances for concurrent calls:
-
-```bash
-# Terminal 1
-python debt_collector.py dev --agent-name agent-1
-
-# Terminal 2  
-python debt_collector.py dev --agent-name agent-2
-```
-
-### Analytics Integration
-
-Extend the risk assessment with custom analytics:
-
-```python
-# In analyze_calls.py
-def custom_risk_analysis(transcript):
-    # Add your custom risk metrics
-    # - Payment history integration
-    # - Credit score correlation
-    # - Geographic risk factors
-    pass
-```
-
-## 📈 Performance Metrics
-
-### Call Success Metrics
-
-- **Connection Rate**: Percentage of successful outbound connections
-- **Conversation Duration**: Average call length
-- **Payment Commitments**: Number of secured payment promises  
-- **Dispute Rate**: Percentage of customers claiming disputes
-
-### Technical Performance  
-
-- **Latency**: Speech-to-text and response generation delays
-- **Audio Quality**: Call clarity and noise reduction effectiveness
-- **Uptime**: Agent availability and reliability
-- **Cost Efficiency**: API usage optimization
-
-## 🎯 Assignment Compliance
-
-This implementation fulfills all assignment requirements:
-
-### ✅ Core Requirements
-
-- **Robust Voice Agent**: Handles edge cases, interruptions, background noise
-- **Human-like Conversation**: Natural, polite dialogue with realistic persona
-- **Phone Call Integration**: Full Twilio integration for outbound US calls
-- **Easy to Use**: Simple web interface and clear setup instructions
-
-### ✅ Bonus Features  
-
-- **Call Recording**: LiveKit Egress integration with automatic saving
-- **Transcript Analysis**: AI-powered risk assessment and sentiment analysis
-- **Professional Demo**: Comprehensive video walkthrough (placeholder provided)
+- **Real-time STT**: See exactly what the agent hears
+- **Live Responses**: Watch Anjali's responses as they generate
+- **Call Status**: Connection, recording, and session info
+- **Error Handling**: Immediate feedback on any issues
 
 ---
 

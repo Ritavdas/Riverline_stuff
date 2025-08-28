@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -12,7 +13,7 @@ from livekit.agents import (
     WorkerOptions,
     cli,
 )
-from livekit.plugins import deepgram, openai, silero
+from livekit.plugins import cartesia, deepgram, openai, silero
 
 load_dotenv()
 logger = logging.getLogger("debt-collection-agent")
@@ -22,7 +23,7 @@ class DebtCollectionAgent(Agent):
     def __init__(self, is_outbound=True) -> None:
         super().__init__(
             instructions=(
-                "You are Sarah, a professional and polite debt collection representative from SecureBank. "
+                "You are Anjali, a professional and polite debt collection representative from SecureBank. "
                 "Your role is to contact customers about overdue credit card payments in a respectful, "
                 "human-like manner. Key guidelines:\n\n"
                 "1. TONE: Be polite, professional, but persistent. Sound like a real human.\n"
@@ -37,6 +38,10 @@ class DebtCollectionAgent(Agent):
                 "- Listen to their response and offer solutions\n"
                 "- Attempt to secure a payment commitment\n"
                 "- End with clear follow-up actions\n\n"
+                "Hello, am i speaking to Ritav?"
+                "[Wait for confirmation]"
+                "Hi Ritav, this is Anjali calling from SecureBank regarding your credit card account. Do you have a few minutes to speak with me about your account?"
+                "[Then proceed to verification if needed]"
                 "Remember: You're calling about a $2,847.32 overdue payment that's 45 days past due. "
                 "Be understanding but firm about the need for payment resolution."
             ),
@@ -46,7 +51,7 @@ class DebtCollectionAgent(Agent):
     async def on_enter(self):
         # Greet immediately for both inbound and outbound calls
         await self.session.say(
-            "Hello, may I please speak with the account holder for credit card ending in 4729?",
+            "Hello, am i speaking to Ritav Das?",
             allow_interruptions=True,
         )
 
@@ -77,8 +82,6 @@ async def entrypoint(ctx: JobContext):
     # If this is an outbound call, create the SIP participant first
     if is_outbound and phone_number:
         try:
-            import os
-
             trunk_id = os.getenv("LIVEKIT_SIP_TRUNK_ID")
 
             await ctx.api.sip.create_sip_participant(
@@ -137,19 +140,19 @@ async def entrypoint(ctx: JobContext):
     session = AgentSession(
         vad=ctx.proc.userdata["vad"],
         stt=deepgram.STT(
-            model="nova-2-phonecall",  # Optimized for phone call audio quality
+            model="nova-2-general",  # Optimized for phone call audio quality
             language="en",
-            smart_format=True,  # Auto-format numbers, dates, etc.
-            punctuate=True,  # Add punctuation for better LLM processing
+            smart_format=False,  # Auto-format numbers, dates, etc.
+            punctuate=False,  # Add punctuation for better LLM processing
         ),
         llm=openai.LLM(
-            model="gpt-4o",  # Superior conversational abilities and human-like responses
-            temperature=0.6,  # Slightly lower for more consistent professional tone
+            model="gpt-4o",  # Much faster than gpt-4o
+            temperature=0.3,  # Lower temperature for faster generation
         ),
-        tts=deepgram.TTS(
-            model="aura-2-arcas-en",  # Higher quality model for more natural voice
-            # voice="alloy",  # More natural and professional sounding than nova
-            # response_format="wav",
+        tts=cartesia.TTS(
+            model="sonic-2",
+            voice="f6141af3-5f94-418c-80ed-a45d450e7e2e",  # Indian lady voice ID
+            language="en",
         ),
     )
 
