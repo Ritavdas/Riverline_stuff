@@ -1,5 +1,166 @@
 [
   {
+    "conversationId": "analysis_1756382305632",
+    "timestamp": "2025-08-28T11:58:25.632Z",
+    "testAgent": {
+      "id": 1,
+      "name": "Maria Rodriguez",
+      "type": "Cooperative",
+      "background": "Single mother of two kids (ages 7 and 12), lost her marketing coordinator job 3 months ago when her company downsized. Currently job hunting while managing kids' school schedules.",
+      "financial_situation": "Living on $1,200/month unemployment benefits, behind on rent and utilities. Kids need school supplies. Has applied to 30+ jobs with no offers yet.",
+      "communication_style": "Speaks softly with a slight accent, apologetic, asks questions to understand options, occasionally pauses to check on kids in background",
+      "cooperation_level": "High - genuinely wants to pay but needs realistic payment plan",
+      "personality_traits": [
+        "Overwhelmed but trying to stay positive",
+        "Protective of her children",
+        "Honest about financial struggles",
+        "Grateful for any help or understanding"
+      ],
+      "speech_patterns": [
+        "Um, excuse me, can I just...",
+        "I'm sorry, one second - kids, please be quiet",
+        "I really do want to pay this back, I just...",
+        "Would it be possible to maybe work something out?"
+      ],
+      "human_behaviors": [
+        "Asks caller to repeat information when distracted",
+        "Sounds tired or overwhelmed at times",
+        "Mentions specific family situations",
+        "Shows genuine relief when offered help"
+      ]
+    },
+    "conversation": [
+      {
+        "speaker": "bot",
+        "message": "Hello, may I please speak with the account holder for credit card ending in 4729?",
+        "timestamp": "2025-08-28T11:57:24.033Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, yes, this is Maria. How can I help?",
+        "timestamp": "2025-08-28T11:57:27.008Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Hi Maria, thanks for taking my call! I'm calling about your overdue payment.",
+        "timestamp": "2025-08-28T11:57:30.416Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I see, yes, I’m aware of that.",
+        "timestamp": "2025-08-28T11:57:33.149Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I appreciate you acknowledging that. Can we discuss a payment plan?",
+        "timestamp": "2025-08-28T11:57:36.131Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, yes, a payment plan sounds good.",
+        "timestamp": "2025-08-28T11:57:38.884Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Great! What amount can you manage this week?",
+        "timestamp": "2025-08-28T11:57:41.685Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I’m not sure... can you repeat that?",
+        "timestamp": "2025-08-28T11:57:44.329Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Sure! What amount could work for you this week?",
+        "timestamp": "2025-08-28T11:57:47.179Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, sorry, can you repeat that again?",
+        "timestamp": "2025-08-28T11:57:49.842Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "No problem! What amount can you comfortably pay this week?",
+        "timestamp": "2025-08-28T11:57:52.606Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Oh, um, sorry, can you repeat that?",
+        "timestamp": "2025-08-28T11:57:55.473Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand it’s a lot. Just a small payment helps!",
+        "timestamp": "2025-08-28T11:57:58.742Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I’m sorry, could you repeat that?",
+        "timestamp": "2025-08-28T11:58:01.515Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I get it, no worries! What can you manage this week?",
+        "timestamp": "2025-08-28T11:58:04.569Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I’m sorry, could you repeat that?",
+        "timestamp": "2025-08-28T11:58:07.250Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand it’s confusing. Just a small payment helps!",
+        "timestamp": "2025-08-28T11:58:10.117Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, I’m sorry, could you repeat that?",
+        "timestamp": "2025-08-28T11:58:12.984Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "I understand, let’s find a way to make this easier.",
+        "timestamp": "2025-08-28T11:58:16.465Z"
+      },
+      {
+        "speaker": "customer",
+        "message": "Um, sorry, can you repeat that?",
+        "timestamp": "2025-08-28T11:58:19.091Z"
+      },
+      {
+        "speaker": "bot",
+        "message": "Sure! Just a small payment can help your account.",
+        "timestamp": "2025-08-28T11:58:21.996Z"
+      }
+    ],
+    "metrics": {
+      "repetition_score": 10,
+      "negotiation_effectiveness": 2,
+      "response_relevance": 3,
+      "payment_commitment_achieved": false,
+      "professional_tone": 8,
+      "customer_satisfaction": 3
+    },
+    "overallScore": 3.05,
+    "recommendations": [
+      "Use varied language and different approaches to engage the customer and avoid excessive repetition",
+      "Develop more effective negotiation strategies to guide the customer towards a payment commitment",
+      "Listen actively to the customer's situation and tailor responses to address their specific needs and concerns"
+    ],
+    "strengths": [
+      "Maintained a professional tone throughout the conversation",
+      "Showed patience by repeating the question multiple times"
+    ],
+    "improvements": [
+      "Excessive repetition without varied language or approach",
+      "Lack of effective negotiation tactics to reach a payment agreement",
+      "Responses were not tailored to address the customer's specific situation"
+    ]
+  },
+  {
     "conversationId": "analysis_1756241682442",
     "timestamp": "2025-08-26T20:54:42.442Z",
     "testAgent": {
