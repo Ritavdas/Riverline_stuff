@@ -14,6 +14,7 @@ A comprehensive web-based platform for testing, analyzing, and automatically imp
 - [🧪 Testing & Analysis](#-testing--analysis)
 - [🤖 Self-Improvement Engine](#-self-improvement-engine)
 - [💾 Data Persistence](#-data-persistence)
+- [🏗️ Architecture Improvements](#️-architecture-improvements)
 
 ## 🎯 Project Overview
 
@@ -73,6 +74,14 @@ Traditional voice agent testing requires manual conversations and subjective eva
 - Filter and search capabilities
 
 ## 🖼️ Screenshots & UI
+
+### 🎥 Platform Demo Video
+
+[![AI Debt Collection Platform Demo](https://img.shields.io/badge/Watch%20Demo-▶️%20Video-red?style=for-the-badge&logo=youtube)](PLACEHOLDER_VIDEO_URL)
+
+*Watch a complete walkthrough of the AI-powered debt collection testing platform, including real-time LLM-to-LLM conversations, advanced analytics, and the self-improvement engine in action.*
+
+---
 
 ### Main Agent Configuration
 
@@ -144,6 +153,8 @@ npm start
 
 # Or with node directly
 node server.js
+
+# The modular architecture ensures clean startup with organized logging
 ```
 
 ### Step 4: Access the Platform
@@ -198,15 +209,23 @@ The platform will automatically initialize with sample data and be ready for tes
 
 ## 🔧 Technical Architecture
 
-### **Backend (Node.js + Express)**
+### **Backend (Node.js + Express) - Modular Architecture**
 
 ```
-server.js                 # Main application server
-├── Routes & Middleware   # Express routes and CORS handling
-├── OpenAI Integration    # GPT-4o for conversations and analysis
-├── Data Persistence      # JSON file-based data storage
-├── Real-time Streaming   # Server-Sent Events for live updates
-└── Self-Improvement API  # AI-powered prompt optimization
+server.js                 # Clean application server (50 lines)
+├── routes/              # Organized route modules
+│   ├── pages.js         # Static page routes
+│   ├── agents.js        # Agent CRUD operations
+│   ├── simulation.js    # Conversation simulation
+│   ├── analysis.js      # Performance analysis
+│   └── selfImprovement.js # AI optimization routes
+├── services/            # Business logic layer
+│   ├── aiService.js     # OpenAI integration & responses
+│   ├── analysisService.js # Conversation analysis
+│   ├── selfImprovementService.js # AI optimization engine
+│   └── dataService.js   # Data initialization
+└── utils/
+    └── fileUtils.js     # Shared JSON utilities
 ```
 
 ### **Frontend (Vanilla JavaScript + Tailwind CSS)**
@@ -233,52 +252,58 @@ data/
     └── historical_data/    # Performance tracking over time
 ```
 
+### **Modular Benefits**
+
+- **Maintainable**: Each module handles specific functionality
+- **Testable**: Individual components can be tested in isolation
+- **Scalable**: Easy to add new features without touching existing code
+- **Reusable**: Services can be shared across different routes
+- **Clean**: Main server file reduced from 1300+ to 50 lines
+
 ## 📊 API Endpoints
 
-### **Core Agent Management**
+### **Page Routes** (`routes/pages.js`)
 
 ```http
 GET  /                           # Main agent configuration page
-POST /api/agent                  # Update main agent configuration
-GET  /api/agent                  # Retrieve current agent configuration
+GET  /test-agents               # Test agent management page  
+GET  /simulate                  # Conversation simulation interface
+GET  /history                   # Performance analytics dashboard
+GET  /self-improve              # AI self-improvement interface
 ```
 
-### **Test Agent Management**
+### **Agent Management** (`routes/agents.js`)
 
 ```http
-GET  /test-agents                # Test agent management page
-GET  /api/test-agents            # Retrieve all test agents
-POST /api/test-agents            # Create new test agent
-PUT  /api/test-agents/:id        # Update existing test agent
-DELETE /api/test-agents/:id      # Delete test agent
+GET  /api/main-agent            # Retrieve current main agent configuration
+POST /api/main-agent            # Update main agent configuration
+GET  /api/test-agents           # Retrieve all test agents
+POST /api/test-agents           # Create new test agent
+PUT  /api/test-agents/:id       # Update existing test agent
+DELETE /api/test-agents/:id     # Delete test agent
 ```
 
-### **Conversation Simulation**
+### **Conversation Simulation** (`routes/simulation.js`)
 
 ```http
-GET  /simulate                   # Simulation interface
-GET  /api/auto-simulate/:agentId # Start real-time LLM conversation (SSE)
-POST /api/manual-simulate        # Manual conversation step
-POST /api/save-conversation      # Save conversation with analysis
+POST /api/simulate-conversation    # Manual conversation step-by-step
+GET  /api/auto-simulate/:agentId  # Real-time LLM-to-LLM conversation (SSE)
 ```
 
-### **Performance Analysis**
+### **Performance Analysis** (`routes/analysis.js`)
 
 ```http
-GET  /history                    # Analytics dashboard
-GET  /api/conversations          # Retrieve conversation history
-POST /api/analyze-conversation   # Analyze conversation metrics
-GET  /api/export-data           # Export performance data
+POST /api/analyze-conversation     # Analyze conversation with GPT-4o metrics
+GET  /api/conversation-history     # Retrieve conversation analysis history
 ```
 
-### **Self-Improvement Engine**
+### **Self-Improvement Engine** (`routes/selfImprovement.js`)
 
 ```http
-GET  /self-improve                    # Self-improvement interface
-POST /api/self-improve/start          # Start improvement session
-GET  /api/self-improve/status/:id     # Get session status
+POST /api/self-improve/start          # Start AI optimization session
+GET  /api/self-improve/status/:id     # Get real-time session status
 POST /api/self-improve/stop           # Stop improvement session
-GET  /api/self-improve/history/:agentId  # Get historical sessions
+GET  /api/self-improve/history/:agentId  # Get historical optimization sessions
 ```
 
 ## 🧪 Testing & Analysis
@@ -440,6 +465,33 @@ The platform uses JSON files for data persistence, providing:
 
 ---
 
+## 🏗️ Architecture Improvements
+
+### **Recent Refactoring (Modular Design)**
+
+The codebase has been completely refactored from a monolithic 1300+ line `server.js` into a clean, modular architecture:
+
+**Before:**
+
+- Single massive server file
+- Mixed concerns (routing, business logic, data access)
+- Difficult to maintain and test
+
+**After:**
+
+- **5 focused route modules** handling specific functionality
+- **4 service modules** containing business logic
+- **1 utility module** for shared functions  
+- **Clean 50-line server.js** with organized imports
+
+This modular approach provides:
+
+- ✅ **Better maintainability** - Each module has a single responsibility
+- ✅ **Improved testability** - Services can be unit tested independently  
+- ✅ **Enhanced scalability** - Easy to add new features without touching existing code
+- ✅ **Code reusability** - Services shared across different routes
+- ✅ **Clean architecture** - Separation of concerns following best practices
+
 ## 🎉 Ready to Get Started?
 
 1. **Install dependencies**: `npm install`
@@ -448,6 +500,6 @@ The platform uses JSON files for data persistence, providing:
 4. **Open browser**: Navigate to `http://localhost:3000`
 5. **Begin testing**: Configure agents, create personalities, run simulations!
 
-The platform includes sample data to get you started immediately. Explore the self-improvement system to see AI-powered optimization in action! 🚀
+The platform includes sample data to get you started immediately. The new modular architecture ensures reliable performance and easy maintenance. Explore the self-improvement system to see AI-powered optimization in action! 🚀
 
 ---
