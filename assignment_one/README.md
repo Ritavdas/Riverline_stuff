@@ -4,8 +4,9 @@ A sophisticated AI-powered debt collection voice agent built with **LiveKit**, *
 
 ## 📽️ Demo Video
 
-> **[Insert your demo video here]**
->
+https://github.com/user-attachments/assets/077e90d3-52a3-4a64-bec0-d69ff57d997e
+
+
 > *A 2-3 minute walkthrough demonstrating the voice agent in action, including:*
 >
 > - *Console interface for initiating calls*
